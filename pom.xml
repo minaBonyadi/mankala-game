@@ -8,11 +8,11 @@
 		<version>2.6.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.board.game</groupId>
+	<groupId>com.boardDto.game</groupId>
 	<artifactId>mankala</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>mankala</name>
-	<description>Mankala project game board</description>
+	<description>Mankala project game boardDto</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

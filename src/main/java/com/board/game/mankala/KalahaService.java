@@ -1,5 +1,6 @@
 package com.board.game.mankala;
 
+import com.board.game.mankala.component.RealToBotPlayingStrategy;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardDto;
 import com.board.game.mankala.data.BoardRepository;
@@ -25,6 +26,7 @@ public class KalahaService {
     private int All_PITS_COUNT;
 
     private final BoardRepository boardRepository;
+    private final RealToBotPlayingStrategy realToBotPlayingStrategy;
 
     public Board createBoard(){
         Map<Integer, Integer> botPlayer = new HashMap<>();
@@ -36,11 +38,12 @@ public class KalahaService {
 
             if (counter < EACH_PLAYER_PITS_COUNT) {
                 botPlayer.put(counter, PITS_MAX_LIMIT);
+                counter++;
             }else {
-                counter = 0;
+                counter = PITS_MAX_LIMIT;
                 realPlayer.put(counter, PITS_MAX_LIMIT);
+                counter--;
             }
-            counter++;
         }
 
        return boardRepository.save(Board.builder()
@@ -51,15 +54,12 @@ public class KalahaService {
                .build());
     }
 
-    public Board makeTurn(BoardDto board , int pitId){
-        Board boardInfo = boardRepository.findById(board.getId())
-                .orElseThrow(() -> new KalahaException(String.format("This {%s} real player does not found!", board)));
+    public BoardDto makeTurn(BoardDto boardDto , int pitId){
+        Board board = boardRepository.findById(boardDto.getId())
+                .orElseThrow(() -> new KalahaException(String.format("This {%s} real player does not found!", boardDto)));
 
-        int value = boardInfo.getRealPits().get(pitId);
-        int previousValue = 0 ;
-        boardInfo.getRealPits().put(pitId, 0);
-//        turnOfRealPlayer(board, pitId, boardInfo, value, previousValue);
-        return null;
+        realToBotPlayingStrategy.playBotRealPlayer(board, pitId);
+        return BoardDto.builder().build();
     }
 
 }

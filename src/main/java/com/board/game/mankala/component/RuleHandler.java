@@ -1,13 +1,12 @@
 package com.board.game.mankala.component;
 
+import com.board.game.mankala.data.Board;
 import com.board.game.mankala.enumeration.PlayerType;
 
-import java.util.Map;
-
 public interface RuleHandler {
-    void makeTurn(PlayerType type);
+    void makeTurn(Board board, int pitId, PlayerType type);
 
-    void getExtra(Map<Integer, Integer> realPlayer , Map<Integer, Integer> botPlayer, int index , PlayerType type);
+    void getExtra(Board board, int pitId , PlayerType type);
 
-    boolean isTheEndOfTheGame(Map<Integer, Integer> realPlayer ,Map<Integer, Integer> botPlayer);
+    boolean isTheEndOfTheGame(Board board);
 }

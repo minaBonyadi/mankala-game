@@ -24,7 +24,7 @@ public class KalahaController {
     }
 
     @PostMapping("/make-turn/{pitId}")
-    public ResponseEntity<Board> makeTurn(@Valid @RequestBody BoardDto boardDto, @PathVariable int pitId){
+    public ResponseEntity<BoardDto> makeTurn(@Valid @RequestBody BoardDto boardDto, @PathVariable int pitId){
         return new ResponseEntity<>(kalahaService.makeTurn(boardDto, pitId), HttpStatus.OK);
     }
 }
