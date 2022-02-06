@@ -1,13 +1,12 @@
-package com.board.game.mankala.model;
+package com.board.game.mankala.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -15,9 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Board implements Serializable {
 
-    String id;
-    List<Integer> botPits;
-    List<Integer> realPits;
+    long id;
+    Map<Integer, Integer> botPits;
+    Map<Integer, Integer> realPits;
     int firstPlayerStorage;
     int botPlayerStorage;
 
