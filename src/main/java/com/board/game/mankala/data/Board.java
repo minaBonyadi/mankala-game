@@ -17,7 +17,7 @@ public class Board implements Serializable {
     long id;
     Map<Integer, Integer> botPits;
     Map<Integer, Integer> realPits;
-    int firstPlayerStorage;
-    int botPlayerStorage;
+    int realStorage;
+    int botStorage;
 
 }

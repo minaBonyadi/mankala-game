@@ -47,8 +47,8 @@ public class KalahaService {
         }
 
        return boardRepository.save(Board.builder()
-               .firstPlayerStorage(0)
-               .botPlayerStorage(0)
+               .realStorage(0)
+               .botStorage(0)
                .botPits(botPlayer)
                .realPits(realPlayer)
                .build());
@@ -58,7 +58,7 @@ public class KalahaService {
         Board board = boardRepository.findById(boardDto.getId())
                 .orElseThrow(() -> new KalahaException(String.format("This {%s} real player does not found!", boardDto)));
 
-        realToBotPlayingStrategy.playBotRealPlayer(board, pitId);
+        realToBotPlayingStrategy.startPlayByRealPlayer(board, pitId);
         return BoardDto.builder().build();
     }
 

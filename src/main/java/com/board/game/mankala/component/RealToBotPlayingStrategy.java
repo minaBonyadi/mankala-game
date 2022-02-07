@@ -2,11 +2,12 @@ package com.board.game.mankala.component;
 
 
 import com.board.game.mankala.data.Board;
-import com.board.game.mankala.data.BoardDto;
+import com.board.game.mankala.data.BotPlayerBoard;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
 import com.board.game.mankala.exception.KalahaException;
 import com.board.game.mankala.impl.PlayingStrategy;
+import org.apache.commons.lang3.RandomUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RealToBotPlayingStrategy implements PlayingStrategy {
 
+    private int BOT_RANDOM_PIT_ID = RandomUtils.nextInt(1, 6); //TODO
     private final RulesManagementImpl ruleHandler;
     private static final int ZERO = 0;
 
@@ -22,30 +24,33 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
         return StrategyName.REALTOBOT;
     }
 
-    public void playBotRealPlayer(Board board, int pitId) {
+    public Board startPlayByRealPlayer(Board board, int pitId) {
         int pitValue = board.getRealPits().get(pitId);
 
-        if (!isChosenPitFill(pitId, board)) {
-            return; //ToDo add exception
+        if (!isChosenPitFill(board, pitId)) {
+            throw new KalahaException(""); //ToDo add exception
         }
 
         board.getRealPits().put(pitId, ZERO);
-        divideRealPlayerValues(board, pitValue);
-//        isTheEndOfTheGame(board);
+
+//        RealPlayerBoard boardAfterRealPlayer = getBoardAfterRealPlayerMove(board, pitId, pitValue);
+//        BotPlayerBoard boardAfterBotPlayer = getBoardAfterBotPlayerMove(board, BOT_RANDOM_PIT_ID);
+//
+//        Board.builder().botPits()
+        return board;
     }
 
-    private boolean isChosenPitFill(int pitId, Board board) {
+    private boolean isChosenPitFill(Board board, int pitId) {
         int pitValue = board.getRealPits().get(pitId);
 
         if (pitValue == ZERO) {
-            playAgain(PlayerType.REAL, pitValue);
+            playAgain(board, PlayerType.REAL, pitValue, pitId);
 //            return adviser
         }
         return true;
     }
 
-    private void divideRealPlayerValues(Board board, int pitId) {
-        int pitValue = board.getRealPits().get(pitId);
+    private Board getBoardAfterRealPlayerMove(Board board, int pitId, int pitValue) {
         int previousValueOfCurrentIndex = ZERO;
 
         while (pitValue > ZERO) {
@@ -55,18 +60,24 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
                 board.getRealPits().put(pitId, board.getRealPits().get(pitId) + 1);
                 pitValue--;
             }
+
             if (previousValueOfCurrentIndex == ZERO &&
                     pitValue == ZERO) ruleHandler.getExtra(board, pitId, PlayerType.REAL);
+
             if (pitId == board.getRealPits().size() && pitValue > ZERO) {
-                board.setBotPlayerStorage(board.getFirstPlayerStorage() + 1);
+                board.setRealStorage(board.getRealStorage() + 1);
                 pitValue--;
-                playAgain(PlayerType.REAL, pitValue);
+                playAgain(board, PlayerType.REAL, pitValue, pitId);
                 if (pitValue > ZERO) {
-                    ruleHandler.makeTurnToBotPlayer(board, pitValue);
+                    ruleHandler.switchToBotPlayer(board, pitValue);
                     break;
                 }
             }
         }
+        return Board.builder()
+                .realPits(board.getRealPits())
+                .realStorage(board.getRealStorage())
+                .build();
     }
 
     private int getRealPlayerPreviousPitValue(Board board, int pitId) {
@@ -76,35 +87,41 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
         throw new KalahaException(String.format("Can not find the previous value of this pit {%s}", pitId));
     }
 
-    private void playByBotPlayer(Board board, int index) {
-        int value = board.getBotPits().get(index);
-        board.getBotPits().put(index, ZERO);
+    private BotPlayerBoard getBoardAfterBotPlayerMove(Board board, int botPitId) {
+        int value = board.getBotPits().get(botPitId);
+        board.getBotPits().put(botPitId, ZERO);
 
-        divideBotPlayerValues(board, index, value);
-        isTheEndOfTheGame(board);
+        return divideBotPlayerValues(board, botPitId, value);
     }
 
-    private void divideBotPlayerValues(Board board, int pitId, int pitValue){
+    private BotPlayerBoard divideBotPlayerValues(Board board, int pitId, int pitValue){
         int previousValueOfCurrentIndex = ZERO;
         while (pitValue > ZERO) {
+
             if (pitId > ZERO && pitId < board.getBotPits().size()) {
                 pitId++;
                 previousValueOfCurrentIndex = getBotPreviousValue(board, pitId);
                 board.getBotPits().put(pitId, board.getBotPits().get(pitId) + 1);
                 pitValue--;
             }
+
             if (previousValueOfCurrentIndex == ZERO &&
                     pitValue == ZERO) ruleHandler.getExtra(board, pitId++, PlayerType.BOT);
+
             if (pitId == board.getBotPits().size() && pitValue > ZERO) {
-                board.setBotPlayerStorage(board.getBotPlayerStorage() + 1);
+                board.setBotStorage(board.getBotStorage() + 1);
                 pitValue--;
-                playAgain(PlayerType.BOT, pitValue);
+                playAgain(board, PlayerType.BOT, pitValue, pitId);
                 if (pitValue > ZERO) {
-                    ruleHandler.makeTurnToRealPlayer(board, pitValue);
+                    ruleHandler.switchToRealPlayer(board, pitValue);
                     break;
                 }
             }
         }
+        return BotPlayerBoard.builder()
+                .botPits(board.getBotPits())
+                .botStorage(board.getBotStorage())
+                .build();
     }
 
     private int getBotPreviousValue(Board board, int pitId) {
@@ -115,21 +132,21 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
         }
     }
 
-    private void playAgain(PlayerType type, int value) {
-//        if (value == ZERO && !ruleHandler.isTheEndOfTheGame(realPlayer, botPlayer)) {
-//            commandHandler.printState(realPlayer, botPlayer, realStorage, botStorage);
-//
-//            if (type.equals(PlayerType.BOT)) {
-//                playByBotPlayer(RandomUtils.nextInt(1, 6));
-//            } else {
-//                playBotRealPlayer(commandHandler.getInput());
-//            }
-//        }
+    private void playAgain(Board board, PlayerType type, int pitValue, int pitId) {
+        if (pitValue == ZERO && !ruleHandler.isTheEndOfTheGame(board)) {
+            if (type.equals(PlayerType.BOT)) {
+                getBoardAfterBotPlayerMove(board, BOT_RANDOM_PIT_ID);
+            } else {
+                startPlayByRealPlayer(board, pitId);
+            }
+        }
     }
 
-    private void isTheEndOfTheGame(Board board) {
-//        if (ruleHandler.isTheEndOfTheGame(board)) {
+    private Board isTheEndOfTheGame(Board board) {
+        if (ruleHandler.isTheEndOfTheGame(board)) {
 //            commandHandler.whoWonTheGame(realStorage, botStorage);
-//        }
+        }
+        return board;
     }
+
 }
