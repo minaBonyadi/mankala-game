@@ -1,15 +1,19 @@
 package com.board.game.mankala.component;
 
 import com.board.game.mankala.data.Board;
+import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@RequiredArgsConstructor
 public class RulesManagementImpl implements RuleHandler {
+    final BoardRepository boardRepository;
 
     @Override
-    public void makeTurn(Board board, int pitId, PlayerType playerType) {
+    public void switchPlayer(Board board, int pitId, PlayerType playerType) {
         if (playerType == PlayerType.BOT){
             switchToBotPlayer(board, pitId);
         }
@@ -28,6 +32,7 @@ public class RulesManagementImpl implements RuleHandler {
             board.getRealPits().put(pitId, 0);
             board.getBotPits().put(pitId, 0);
         }
+        boardRepository.save(board);
     }
 
     @Override
@@ -39,6 +44,7 @@ public class RulesManagementImpl implements RuleHandler {
             board.getRealPits().replaceAll((k, v) -> v = 0);
             board.setBotStorage(board.getBotPits().values().stream().mapToInt(Integer::intValue).sum());
             board.getBotPits().replaceAll((k, v) -> v = 0);
+            boardRepository.save(board);
             return true;
         }
         return false;
@@ -49,15 +55,17 @@ public class RulesManagementImpl implements RuleHandler {
         int firstIndex = 1;
         while (pitId > 0) {
             board.getBotPits().put(firstIndex, (board.getBotPits().get(firstIndex)) + 1);
-            firstIndex++; pitId--;
+            firstIndex++;
+            pitId--;
 
-            if (firstIndex > board.getBotPits().size() && pitId > 0){
+            if (firstIndex > board.getBotPits().size() && pitId > 0) {
                 board.setBotStorage(board.getBotStorage() + 1);
                 pitId--;
                 switchToRealPlayer(board, pitId);
                 break;
             }
         }
+        boardRepository.save(board);
     }
 
     public void switchToRealPlayer(Board board, int pitValue){
@@ -74,5 +82,6 @@ public class RulesManagementImpl implements RuleHandler {
                 break;
             }
         }
+        boardRepository.save(board);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class Board implements Serializable {
 
-    long id;
+    String id;
     Map<Integer, Integer> botPits;
     Map<Integer, Integer> realPits;
     int realStorage;

@@ -1,8 +1,7 @@
 package com.board.game.mankala.component;
 
-
 import com.board.game.mankala.data.Board;
-import com.board.game.mankala.data.BotPlayerBoard;
+import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
 import com.board.game.mankala.exception.KalahaException;
@@ -15,8 +14,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RealToBotPlayingStrategy implements PlayingStrategy {
 
-    private int BOT_RANDOM_PIT_ID = RandomUtils.nextInt(1, 6); //TODO
+    private final int BOT_RANDOM_PIT_ID = RandomUtils.nextInt(1, 6); //TODO
     private final RulesManagementImpl ruleHandler;
+    private final BoardRepository boardRepository;
     private static final int ZERO = 0;
 
     @Override
@@ -33,11 +33,9 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
 
         board.getRealPits().put(pitId, ZERO);
 
-//        RealPlayerBoard boardAfterRealPlayer = getBoardAfterRealPlayerMove(board, pitId, pitValue);
-//        BotPlayerBoard boardAfterBotPlayer = getBoardAfterBotPlayerMove(board, BOT_RANDOM_PIT_ID);
-//
-//        Board.builder().botPits()
-        return board;
+        getBoardAfterRealPlayerMove(board, pitId, pitValue);
+        getBoardAfterBotPlayerMove(board, BOT_RANDOM_PIT_ID);
+        return boardRepository.findById(board.getId()).orElseThrow(() -> new KalahaException(""));
     }
 
     private boolean isChosenPitFill(Board board, int pitId) {
@@ -54,6 +52,7 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
         int previousValueOfCurrentIndex = ZERO;
 
         while (pitValue > ZERO) {
+
             if (pitId > ZERO && pitId < board.getRealPits().size()) {
                 pitId++;
                 previousValueOfCurrentIndex = getRealPlayerPreviousPitValue(board, pitId);
@@ -74,10 +73,7 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
                 }
             }
         }
-        return Board.builder()
-                .realPits(board.getRealPits())
-                .realStorage(board.getRealStorage())
-                .build();
+        return boardRepository.save(board);
     }
 
     private int getRealPlayerPreviousPitValue(Board board, int pitId) {
@@ -87,14 +83,14 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
         throw new KalahaException(String.format("Can not find the previous value of this pit {%s}", pitId));
     }
 
-    private BotPlayerBoard getBoardAfterBotPlayerMove(Board board, int botPitId) {
+    private Board getBoardAfterBotPlayerMove(Board board, int botPitId) {
         int value = board.getBotPits().get(botPitId);
         board.getBotPits().put(botPitId, ZERO);
 
         return divideBotPlayerValues(board, botPitId, value);
     }
 
-    private BotPlayerBoard divideBotPlayerValues(Board board, int pitId, int pitValue){
+    private Board divideBotPlayerValues(Board board, int pitId, int pitValue){
         int previousValueOfCurrentIndex = ZERO;
         while (pitValue > ZERO) {
 
@@ -118,10 +114,7 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
                 }
             }
         }
-        return BotPlayerBoard.builder()
-                .botPits(board.getBotPits())
-                .botStorage(board.getBotStorage())
-                .build();
+        return boardRepository.save(board);
     }
 
     private int getBotPreviousValue(Board board, int pitId) {

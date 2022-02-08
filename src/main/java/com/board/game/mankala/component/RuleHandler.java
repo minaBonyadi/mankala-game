@@ -4,7 +4,7 @@ import com.board.game.mankala.data.Board;
 import com.board.game.mankala.enumeration.PlayerType;
 
 public interface RuleHandler {
-    void makeTurn(Board board, int pitId, PlayerType type);
+    void switchPlayer(Board board, int pitId, PlayerType type);
 
     void getExtra(Board board, int pitId , PlayerType type);
 
