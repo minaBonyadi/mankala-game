@@ -15,20 +15,20 @@ public class RulesManagementImpl implements RuleHandler {
     @Override
     public void switchPlayer(Board board, int pitId, PlayerType playerType) {
         if (playerType == PlayerType.BOT){
-            switchToBotPlayer(board, pitId);
+            switchToRealPlayer(board, pitId);
         }
-        switchToRealPlayer(board, pitId);
+        switchToBotPlayer(board, pitId);
     }
 
     @Override
     public void getExtra(Board board, int pitId, PlayerType type) {
         if (type.equals(PlayerType.BOT) && pitId > 0 && board.getRealPits().get(pitId) != 0){
-            board.setBotStorage((board.getRealPits().get(pitId)) + 1);
+            board.setBotStorage(board.getBotStorage() + (board.getRealPits().get(pitId)) + 1);
             board.getBotPits().put(pitId, 0);
             board.getRealPits().put(pitId, 0);
 
         } else if (type.equals(PlayerType.REAL) && pitId > 0 && board.getBotPits().get(pitId) != 0){
-            board.setRealStorage(board.getBotPits().get(pitId) + 1);
+            board.setRealStorage(board.getRealStorage() + (board.getBotPits().get(pitId)) + 1);
             board.getRealPits().put(pitId, 0);
             board.getBotPits().put(pitId, 0);
         }

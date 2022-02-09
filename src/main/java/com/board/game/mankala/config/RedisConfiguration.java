@@ -1,29 +1,26 @@
 package com.board.game.mankala.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.board.game.mankala.component.RedisProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfiguration {
 
-    @Value("${spring.redis.host}")
-    private String host;
-
-    @Value("${spring.redis.port}")
-    private Integer port;
-
     @Bean
-    public LettuceConnectionFactory connectionFactory() {
-        return new LettuceConnectionFactory(host, port);
+    public LettuceConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
+        return new LettuceConnectionFactory(
+                redisProperties.getRedisHost(),
+                redisProperties.getRedisPort());
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<?, ?> redisTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         return template;
     }

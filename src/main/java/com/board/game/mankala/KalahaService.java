@@ -1,13 +1,13 @@
 package com.board.game.mankala;
 
 import com.board.game.mankala.component.RealToBotPlayingStrategy;
+import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardDto;
 import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.exception.KalahaException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -18,13 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KalahaService {
 
-    @Value("${board.pits.max.limit}")
-    private int PITS_MAX_LIMIT;
-    @Value("${board.pits.of.each.player}")
-    private int EACH_PLAYER_PITS_COUNT;
-    @Value("${board.all.pits.count}")
-    private int All_PITS_COUNT;
-
+    private final KalahaPropertiesConfiguration kalahaSetting;
     private final BoardRepository boardRepository;
     private final RealToBotPlayingStrategy realToBotPlayingStrategy;
 
@@ -34,14 +28,14 @@ public class KalahaService {
 
         int counter = 0;
 
-        while(counter <= All_PITS_COUNT) {
+        while(counter <= kalahaSetting.getBotRandomPitId()) {
 
-            if (counter < EACH_PLAYER_PITS_COUNT) {
-                botPlayer.put(counter, PITS_MAX_LIMIT);
+            if (counter < kalahaSetting.getEachPlayerPitsCount()) {
+                botPlayer.put(counter, kalahaSetting.getPitsMaxLimit());
                 counter++;
             }else {
-                counter = PITS_MAX_LIMIT;
-                realPlayer.put(counter, PITS_MAX_LIMIT);
+                counter = kalahaSetting.getPitsMaxLimit();
+                realPlayer.put(counter, kalahaSetting.getPitsMaxLimit());
                 counter--;
             }
         }
