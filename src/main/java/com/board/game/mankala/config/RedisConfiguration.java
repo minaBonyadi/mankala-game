@@ -1,6 +1,5 @@
 package com.board.game.mankala.config;
 
-import com.board.game.mankala.component.RedisProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

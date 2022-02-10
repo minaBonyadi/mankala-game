@@ -1,10 +1,13 @@
 package com.board.game.mankala;
 
-import com.board.game.mankala.component.RealToBotPlayingStrategy;
+import com.board.game.mankala.component.RealPlayerImpl;
 import com.board.game.mankala.component.RealToBotStrategyRulesImpl;
 import com.board.game.mankala.config.KalahaPropertiesConfiguration;
+import com.board.game.mankala.config.TestRedisConfiguration;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardRepository;
+import com.board.game.mankala.enumeration.PlayerType;
+import com.board.game.mankala.exception.KalahaBoardNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +18,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestRedisConfiguration.class)
-class RealToBotPlayingStrategyTest {
+class RealPlayerImplTest {
 
     @Autowired
-    private RealToBotPlayingStrategy realToBotPlaying;
+    private RealPlayerImpl realPlayer;
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
     private RealToBotStrategyRulesImpl ruleHandler;
-    
+
     @MockBean
     private KalahaPropertiesConfiguration kalahaSetting;
     @MockBean
@@ -68,8 +70,8 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(3);
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 1);
+        realPlayer.sow(board, 1, 1, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new);
 
         //************************
         //          THEN
@@ -86,8 +88,8 @@ class RealToBotPlayingStrategyTest {
         assertThat(boardResult.getRealPits().get(6)).isZero();
 
         assertThat(boardResult.getBotPits().get(1)).isZero();
-        assertThat(boardResult.getBotPits().get(2)).isEqualTo(1);
-        assertThat(boardResult.getBotPits().get(3)).isZero();
+        assertThat(boardResult.getBotPits().get(2)).isZero();
+        assertThat(boardResult.getBotPits().get(3)).isEqualTo(1);
         assertThat(boardResult.getBotPits().get(4)).isZero();
         assertThat(boardResult.getBotPits().get(5)).isZero();
         assertThat(boardResult.getBotPits().get(6)).isEqualTo(22);
@@ -129,14 +131,14 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(2); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 4); //real choose
+        realPlayer.sow(board, 4, 1, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
         assertThat(boardResult.getRealStorage()).isEqualTo(20);
-        assertThat(boardResult.getBotStorage()).isEqualTo(16);
+        assertThat(boardResult.getBotStorage()).isEqualTo(15);
 
         assertThat(boardResult.getRealPits().get(1)).isEqualTo(4);
         assertThat(boardResult.getRealPits().get(2)).isEqualTo(4);
@@ -145,8 +147,8 @@ class RealToBotPlayingStrategyTest {
         assertThat(boardResult.getRealPits().get(5)).isEqualTo(4);
         assertThat(boardResult.getRealPits().get(6)).isEqualTo(4);
 
-        assertThat(boardResult.getBotPits().get(1)).isEqualTo(4);
-        assertThat(boardResult.getBotPits().get(2)).isZero();
+        assertThat(boardResult.getBotPits().get(1)).isEqualTo(3);
+        assertThat(boardResult.getBotPits().get(2)).isEqualTo(2);
         assertThat(boardResult.getBotPits().get(3)).isEqualTo(4);
         assertThat(boardResult.getBotPits().get(4)).isZero();
         assertThat(boardResult.getBotPits().get(5)).isZero();
@@ -189,18 +191,17 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(3); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 3); //real choose
-
+        realPlayer.sow(board, 3, 2, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
         assertThat(boardResult.getRealStorage()).isEqualTo(20);
-        assertThat(boardResult.getBotStorage()).isEqualTo(22); // +3
+        assertThat(boardResult.getBotStorage()).isEqualTo(15);
 
         assertThat(boardResult.getRealPits().get(1)).isEqualTo(2);
-        assertThat(boardResult.getRealPits().get(2)).isZero();
+        assertThat(boardResult.getRealPits().get(2)).isEqualTo(6);
         assertThat(boardResult.getRealPits().get(3)).isZero();
         assertThat(boardResult.getRealPits().get(4)).isEqualTo(6);
         assertThat(boardResult.getRealPits().get(5)).isEqualTo(2);
@@ -208,7 +209,7 @@ class RealToBotPlayingStrategyTest {
 
         assertThat(boardResult.getBotPits().get(1)).isEqualTo(3);
         assertThat(boardResult.getBotPits().get(2)).isZero();
-        assertThat(boardResult.getBotPits().get(3)).isZero();
+        assertThat(boardResult.getBotPits().get(3)).isEqualTo(1);
         assertThat(boardResult.getBotPits().get(4)).isZero();
         assertThat(boardResult.getBotPits().get(5)).isZero();
         assertThat(boardResult.getBotPits().get(6)).isEqualTo(4);
@@ -250,26 +251,25 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(3); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 2); //real choose
-
+        realPlayer.sow(board, 2, 2, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
         assertThat(boardResult.getRealStorage()).isEqualTo(23); //+3
-        assertThat(boardResult.getBotStorage()).isEqualTo(19);
+        assertThat(boardResult.getBotStorage()).isEqualTo(18);
 
-        assertThat(boardResult.getRealPits().get(1)).isEqualTo(4);
+        assertThat(boardResult.getRealPits().get(1)).isEqualTo(3);
         assertThat(boardResult.getRealPits().get(2)).isZero();
         assertThat(boardResult.getRealPits().get(3)).isEqualTo(2);
         assertThat(boardResult.getRealPits().get(4)).isZero();
         assertThat(boardResult.getRealPits().get(5)).isEqualTo(3);
         assertThat(boardResult.getRealPits().get(6)).isEqualTo(3);
 
-        assertThat(boardResult.getBotPits().get(1)).isEqualTo(5);
-        assertThat(boardResult.getBotPits().get(2)).isEqualTo(5);
-        assertThat(boardResult.getBotPits().get(3)).isZero();
+        assertThat(boardResult.getBotPits().get(1)).isEqualTo(4);
+        assertThat(boardResult.getBotPits().get(2)).isEqualTo(4);
+        assertThat(boardResult.getBotPits().get(3)).isEqualTo(4);
         assertThat(boardResult.getBotPits().get(4)).isZero();
         assertThat(boardResult.getBotPits().get(5)).isEqualTo(4);
         assertThat(boardResult.getBotPits().get(6)).isEqualTo(4);
@@ -311,15 +311,14 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(4); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 4); //real choose
-
+        realPlayer.sow(board, 4, 2, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
         assertThat(boardResult.getRealStorage()).isEqualTo(24); //+4
-        assertThat(boardResult.getBotStorage()).isEqualTo(19);
+        assertThat(boardResult.getBotStorage()).isEqualTo(18);
 
         assertThat(boardResult.getRealPits().get(1)).isEqualTo(3);
         assertThat(boardResult.getRealPits().get(2)).isEqualTo(2);
@@ -328,10 +327,10 @@ class RealToBotPlayingStrategyTest {
         assertThat(boardResult.getRealPits().get(5)).isEqualTo(2);
         assertThat(boardResult.getRealPits().get(6)).isZero();
 
-        assertThat(boardResult.getBotPits().get(1)).isEqualTo(5);
-        assertThat(boardResult.getBotPits().get(2)).isEqualTo(5);
-        assertThat(boardResult.getBotPits().get(3)).isEqualTo(3);
-        assertThat(boardResult.getBotPits().get(4)).isZero();
+        assertThat(boardResult.getBotPits().get(1)).isEqualTo(4);
+        assertThat(boardResult.getBotPits().get(2)).isEqualTo(4);
+        assertThat(boardResult.getBotPits().get(3)).isEqualTo(2);
+        assertThat(boardResult.getBotPits().get(4)).isEqualTo(4);
         assertThat(boardResult.getBotPits().get(5)).isEqualTo(5);
         assertThat(boardResult.getBotPits().get(6)).isZero();
     }
@@ -372,23 +371,23 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(1); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 1); //real choose
+        realPlayer.sow(board, 1, 6, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
-        assertThat(boardResult.getBotStorage()).isEqualTo(1);
+        assertThat(boardResult.getBotStorage()).isEqualTo(0);
         assertThat(boardResult.getRealStorage()).isEqualTo(1);
 
-        assertThat(boardResult.getRealPits().get(1)).isEqualTo(1);
-        assertThat(boardResult.getRealPits().get(2)).isEqualTo(8);
-        assertThat(boardResult.getRealPits().get(3)).isEqualTo(8);
-        assertThat(boardResult.getRealPits().get(4)).isEqualTo(8);
-        assertThat(boardResult.getRealPits().get(5)).isEqualTo(8);
+        assertThat(boardResult.getRealPits().get(1)).isZero();
+        assertThat(boardResult.getRealPits().get(2)).isEqualTo(7);
+        assertThat(boardResult.getRealPits().get(3)).isEqualTo(7);
+        assertThat(boardResult.getRealPits().get(4)).isEqualTo(7);
+        assertThat(boardResult.getRealPits().get(5)).isEqualTo(7);
         assertThat(boardResult.getRealPits().get(6)).isEqualTo(7);
 
-        assertThat(boardResult.getBotPits().get(1)).isEqualTo(0);
+        assertThat(boardResult.getBotPits().get(1)).isEqualTo(6);
         assertThat(boardResult.getBotPits().get(2)).isEqualTo(6);
         assertThat(boardResult.getBotPits().get(3)).isEqualTo(6);
         assertThat(boardResult.getBotPits().get(4)).isEqualTo(6);
@@ -432,14 +431,13 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(5); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 5); //real choose
-
+        realPlayer.sow(board, 5, 12, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
-        assertThat(boardResult.getBotStorage()).isEqualTo(13);
+        assertThat(boardResult.getBotStorage()).isEqualTo(12);
         assertThat(boardResult.getRealStorage()).isEqualTo(12);
 
         assertThat(boardResult.getRealPits().get(1)).isEqualTo(2);
@@ -449,11 +447,11 @@ class RealToBotPlayingStrategyTest {
         assertThat(boardResult.getRealPits().get(5)).isZero();
         assertThat(boardResult.getRealPits().get(6)).isEqualTo(1);
 
-        assertThat(boardResult.getBotPits().get(1)).isEqualTo(13);
-        assertThat(boardResult.getBotPits().get(2)).isEqualTo(2);
-        assertThat(boardResult.getBotPits().get(3)).isEqualTo(3);
-        assertThat(boardResult.getBotPits().get(4)).isEqualTo(2);
-        assertThat(boardResult.getBotPits().get(5)).isZero();
+        assertThat(boardResult.getBotPits().get(1)).isEqualTo(12);
+        assertThat(boardResult.getBotPits().get(2)).isEqualTo(1);
+        assertThat(boardResult.getBotPits().get(3)).isEqualTo(2);
+        assertThat(boardResult.getBotPits().get(4)).isEqualTo(1);
+        assertThat(boardResult.getBotPits().get(5)).isEqualTo(5);
         assertThat(boardResult.getBotPits().get(6)).isEqualTo(10);
     }
 
@@ -493,28 +491,28 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(6); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 2); //real choose
+        realPlayer.sow(board, 2, 1, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
 
-        assertThat(boardResult.getBotStorage()).isEqualTo(12);
+        assertThat(boardResult.getBotStorage()).isEqualTo(11);
         assertThat(boardResult.getRealStorage()).isEqualTo(11);
 
-        assertThat(boardResult.getRealPits().get(1)).isEqualTo(2);
-        assertThat(boardResult.getRealPits().get(2)).isEqualTo(1);
-        assertThat(boardResult.getRealPits().get(3)).isEqualTo(3);
+        assertThat(boardResult.getRealPits().get(1)).isEqualTo(1);
+        assertThat(boardResult.getRealPits().get(2)).isZero();
+        assertThat(boardResult.getRealPits().get(3)).isEqualTo(2);
         assertThat(boardResult.getRealPits().get(4)).isEqualTo(10);
         assertThat(boardResult.getRealPits().get(5)).isEqualTo(12);
         assertThat(boardResult.getRealPits().get(6)).isZero();
 
-        assertThat(boardResult.getBotPits().get(1)).isEqualTo(12);
-        assertThat(boardResult.getBotPits().get(2)).isEqualTo(1);
-        assertThat(boardResult.getBotPits().get(3)).isEqualTo(2);
-        assertThat(boardResult.getBotPits().get(4)).isEqualTo(1);
-        assertThat(boardResult.getBotPits().get(5)).isEqualTo(5);
-        assertThat(boardResult.getBotPits().get(6)).isZero();
+        assertThat(boardResult.getBotPits().get(1)).isEqualTo(11);
+        assertThat(boardResult.getBotPits().get(2)).isZero();
+        assertThat(boardResult.getBotPits().get(3)).isEqualTo(1);
+        assertThat(boardResult.getBotPits().get(4)).isZero();
+        assertThat(boardResult.getBotPits().get(5)).isEqualTo(4);
+        assertThat(boardResult.getBotPits().get(6)).isEqualTo(9);
     }
 
     @Test
@@ -553,9 +551,9 @@ class RealToBotPlayingStrategyTest {
         //************************
         //          WHEN
         //************************
-        when(kalahaSetting.getBotRandomPitId()).thenReturn(2); //bot choose
-        Board boardResult = realToBotPlaying.startPlayByRealPlayer(board, 6); //real choose
 
+        realPlayer.sow(board, 6, 1, PlayerType.REAL);
+        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************

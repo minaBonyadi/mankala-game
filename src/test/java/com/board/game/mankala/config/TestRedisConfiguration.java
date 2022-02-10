@@ -1,4 +1,4 @@
-package com.board.game.mankala;
+package com.board.game.mankala.config;
 
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.TestConfiguration;

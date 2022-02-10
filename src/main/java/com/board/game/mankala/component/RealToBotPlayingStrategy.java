@@ -5,18 +5,22 @@ import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
-import com.board.game.mankala.exception.KalahaException;
+import com.board.game.mankala.exception.KalahaBoardNotFoundException;
+import com.board.game.mankala.exception.KalahaWebException;
+import com.board.game.mankala.handler.SowHandler;
 import com.board.game.mankala.impl.PlayingStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RealToBotPlayingStrategy implements PlayingStrategy {
+public abstract class RealToBotPlayingStrategy implements PlayingStrategy{
 
+    private final BoardRepository boardRepository;
+    private final RealPlayerImpl realPlayer;
+    private final BotPlayerImpl botPlayer;
     private final KalahaPropertiesConfiguration kalahaSetting;
     private final RealToBotStrategyRulesImpl ruleHandler;
-    private final BoardRepository boardRepository;
 
     @Override
     public StrategyName getStrategyName() {
@@ -24,39 +28,25 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
     }
 
     public Board startPlayByRealPlayer(Board board, int pitId) {
-        //TODO pitID shoudl not be null
         int chosenPitValue = board.getRealPits().get(pitId);
 
-        if (!isChosenPitFill(board, pitId)) {
-            throw new KalahaException("");
+        if (chosenPitValue == kalahaSetting.getZero()) {
+            throw new KalahaWebException("Chosen pit does not filled, please choose another pit!");
         }
-
-        board.getRealPits().put(pitId, kalahaSetting.getZero());
 
         getBoardAfterRealPlayerMove(board, pitId, chosenPitValue);
         getBoardAfterBotPlayerMove(board, kalahaSetting.getBotRandomPitId());
-        return boardRepository.findById(board.getId()).orElseThrow(() -> new KalahaException(""));
+
+        return boardRepository.findById(board.getId()).orElseThrow(KalahaBoardNotFoundException::new);
     }
 
-    private boolean isChosenPitFill(Board board, int pitId) {
-        int pitValue = board.getRealPits().get(pitId);
-
-        if (pitValue == kalahaSetting.getZero()) {
-            ruleHandler.playAgain(board, PlayerType.REAL, pitId, pitValue);
-//            return adviser
-        }
-        return true;
+    private void getBoardAfterRealPlayerMove(Board board, int pitId, int pitValue) {
+        realPlayer.sow(board, pitId, pitValue, PlayerType.REAL);
     }
 
-    private Board getBoardAfterRealPlayerMove(Board board, int pitId, int pitValue) {
-        ruleHandler.sow(board, pitId, pitValue, PlayerType.REAL);
-        return boardRepository.save(board);
-    }
-
-    private Board getBoardAfterBotPlayerMove(Board board, int pitId){
+    private void getBoardAfterBotPlayerMove(Board board, int pitId){
         int pitValue = board.getBotPits().get(pitId);
-        ruleHandler.sow(board, pitId, pitValue, PlayerType.BOT);
-        return boardRepository.save(board);
+        botPlayer.sow(board, pitId, pitValue, PlayerType.BOT);
     }
 
 }

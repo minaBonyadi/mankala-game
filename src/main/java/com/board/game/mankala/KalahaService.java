@@ -5,7 +5,7 @@ import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardDto;
 import com.board.game.mankala.data.BoardRepository;
-import com.board.game.mankala.exception.KalahaException;
+import com.board.game.mankala.exception.KalahaWebException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class KalahaService {
 
     public BoardDto makeTurn(BoardDto boardDto , int pitId){
         Board board = boardRepository.findById(boardDto.getId())
-                .orElseThrow(() -> new KalahaException(String.format("This {%s} real player does not found!", boardDto)));
+                .orElseThrow(() -> new KalahaWebException(String.format("This {%s} real player does not found!", boardDto)));
 
         realToBotPlayingStrategy.startPlayByRealPlayer(board, pitId);
         return BoardDto.builder().build();

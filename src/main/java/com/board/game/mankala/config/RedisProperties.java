@@ -1,6 +1,5 @@
-package com.board.game.mankala.component;
+package com.board.game.mankala.config;
 
-import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
