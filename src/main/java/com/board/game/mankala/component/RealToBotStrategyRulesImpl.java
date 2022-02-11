@@ -2,15 +2,15 @@ package com.board.game.mankala.component;
 
 import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.data.Board;
-import com.board.game.mankala.data.BoardRepository;
+import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.handler.RuleHandler;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RealToBotStrategyRulesImpl implements RuleHandler {
 
     final BoardRepository boardRepository;

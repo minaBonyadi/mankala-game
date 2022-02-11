@@ -1,7 +1,7 @@
 # mina bonyad
 
 
-
+http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.

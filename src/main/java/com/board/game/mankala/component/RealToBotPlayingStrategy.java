@@ -2,7 +2,7 @@ package com.board.game.mankala.component;
 
 import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.data.Board;
-import com.board.game.mankala.data.BoardRepository;
+import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
@@ -63,8 +63,9 @@ public class RealToBotPlayingStrategy implements PlayingStrategy{
             board.getRealPits().replaceAll((k, v) -> v = 0);
             board.setBotStorage(board.getBotStorage() + board.getBotPits().values().stream().mapToInt(Integer::intValue).sum());
             board.getBotPits().replaceAll((k, v) -> v = 0);
-            boardRepository.save(board);
+            return boardRepository.save(board);
+        }else {
+            throw new KalahaWebException("Kalaha game board has not ended yet!");
         }
-        throw new KalahaWebException("Kalaha game board has not ended yet!");
     }
 }

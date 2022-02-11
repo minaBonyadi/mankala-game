@@ -5,7 +5,7 @@ import com.board.game.mankala.component.RealToBotStrategyRulesImpl;
 import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.config.TestRedisConfiguration;
 import com.board.game.mankala.data.Board;
-import com.board.game.mankala.data.BoardRepository;
+import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
 import com.board.game.mankala.service.KalahaService;
