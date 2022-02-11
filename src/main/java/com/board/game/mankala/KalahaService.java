@@ -1,45 +1,59 @@
 package com.board.game.mankala;
 
-import com.board.game.mankala.model.Board;
-import com.board.game.mankala.model.BoardRepository;
+import com.board.game.mankala.component.RealToBotPlayingStrategy;
+import com.board.game.mankala.config.KalahaPropertiesConfiguration;
+import com.board.game.mankala.data.Board;
+import com.board.game.mankala.data.BoardDto;
+import com.board.game.mankala.data.BoardRepository;
+import com.board.game.mankala.exception.KalahaWebException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class KalahaService {
 
-    //TODO make them by config properties
-    private final int PITS_MAX_LIMIT = 6;
-    private final int EACH_PLAYER_PITS_COUNT = 6;
-    private final int All_PITS_COUNT = 12;
-
+    private final KalahaPropertiesConfiguration kalahaSetting;
     private final BoardRepository boardRepository;
+    private final RealToBotPlayingStrategy realToBotPlayingStrategy;
 
     public Board createBoard(){
-        List<Integer> botPlayer = new ArrayList<>();
-        List<Integer> realPlayer = new ArrayList<>();
+        Map<Integer, Integer> botPlayer = new HashMap<>();
+        Map<Integer, Integer> realPlayer = new HashMap<>();
 
-        int counter = 1;
+        int counter = 0;
 
-        while(counter <= All_PITS_COUNT) {
+        while(counter <= kalahaSetting.getBotRandomPitId()) {
 
-            if (counter <= EACH_PLAYER_PITS_COUNT) {
-                botPlayer.add(PITS_MAX_LIMIT);
+            if (counter < kalahaSetting.getEachPlayerPitsCount()) {
+                botPlayer.put(counter, kalahaSetting.getPitsMaxLimit());
+                counter++;
             }else {
-                realPlayer.add(PITS_MAX_LIMIT);
+                counter = kalahaSetting.getPitsMaxLimit();
+                realPlayer.put(counter, kalahaSetting.getPitsMaxLimit());
+                counter--;
             }
-            counter++;
         }
 
        return boardRepository.save(Board.builder()
-               .firstPlayerStorage(0)
-               .botPlayerStorage(0)
+               .realStorage(0)
+               .botStorage(0)
                .botPits(botPlayer)
                .realPits(realPlayer)
                .build());
     }
+
+    public BoardDto makeTurn(BoardDto boardDto , int pitId){
+        Board board = boardRepository.findById(boardDto.getId())
+                .orElseThrow(() -> new KalahaWebException(String.format("This {%s} real player does not found!", boardDto)));
+
+        realToBotPlayingStrategy.startPlayByRealPlayer(board, pitId);
+        return BoardDto.builder().build();
+    }
+
 }

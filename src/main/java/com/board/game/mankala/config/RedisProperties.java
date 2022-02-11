@@ -1,6 +1,5 @@
 package com.board.game.mankala.config;
 
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Getter
 public class RedisProperties {
+
     private int redisPort;
     private String redisHost;
 
@@ -17,4 +17,5 @@ public class RedisProperties {
         this.redisPort = redisPort;
         this.redisHost = redisHost;
     }
+
 }
