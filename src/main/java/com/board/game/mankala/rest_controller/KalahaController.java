@@ -23,8 +23,18 @@ public class KalahaController {
         return new ResponseEntity<>(kalahaService.createBoard(), HttpStatus.OK);
     }
 
-    @PostMapping("/make-turn/{pitId}")
-    public ResponseEntity<BoardDto> makeTurn(@Valid @RequestBody BoardDto boardDto, @PathVariable int pitId){
-        return new ResponseEntity<>(kalahaService.makeTurn(boardDto, pitId), HttpStatus.OK);
+    @PostMapping("/real/make-turn/{pitId}")
+    public ResponseEntity<BoardDto> makeTurnRealPlayer(@Valid @RequestBody BoardDto boardDto, @PathVariable int pitId){
+        return new ResponseEntity<>(kalahaService.makeTurnToRealPlayer(boardDto, pitId), HttpStatus.OK);
+    }
+
+    @PostMapping("/bot/make-turn")
+    public ResponseEntity<BoardDto> makeTurnBotPlayer(@Valid @RequestBody BoardDto boardDto){
+        return new ResponseEntity<>(kalahaService.makeTurnToBotPlayer(boardDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/check-game-ended")
+    public ResponseEntity<BoardDto> checkGameEnded(@Valid @RequestBody BoardDto boardDto){
+        return new ResponseEntity<>(kalahaService.checkGameEnded(boardDto), HttpStatus.OK);
     }
 }

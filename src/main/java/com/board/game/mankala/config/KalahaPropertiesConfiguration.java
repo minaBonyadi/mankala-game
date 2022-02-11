@@ -16,20 +16,29 @@ public class KalahaPropertiesConfiguration {
     @Value("${spring.redis.port}")
     private Integer port;
 
-    @Value("${kalaha.board.game.pits.max.limit}")
-    private int pitsMaxLimit;
+    @Value("${kalaha.board.game.pits.value.max.limit}")
+    private int pitsMaxValueLimit;
 
-    @Value("${kalaha.board.game.pits.min.limit}")
-    private int pitsMinLimit;
+    @Value("${kalaha.board.game.pits.value.min.limit}")
+    private int pitsMinValueLimit;
 
     @Value("${kalaha.board.game.pits.of.each.player}")
     private int eachPlayerPitsCount;
+
+    @Value("${kalaha.board.game.pit.id.max.size}")
+    private int pitsIdMaxSize;
+
+    @Value("${kalaha.board.game.pit.id.min.size}")
+    private int pitsIdMinSize;
+
+    @Value("${kalaha.board.game.storage.min.value}")
+    private int storageMinValue;
 
     @Value("${kalaha.board.game.all.pits.count}")
     private int allPitsCount;
 
     @Value("${kalaha.board.game.generate.bot.random.pit.id}")
-    private int botRandomPitId = RandomUtils.nextInt(pitsMinLimit, pitsMaxLimit);
+    private final int botRandomPitId = RandomUtils.nextInt(pitsMinValueLimit, pitsMaxValueLimit);
 
     @Value("${kalaha.board.game.zero}")
     private int zero;

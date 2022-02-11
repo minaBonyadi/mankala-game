@@ -7,14 +7,13 @@ import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
 import com.board.game.mankala.exception.KalahaWebException;
-import com.board.game.mankala.handler.SowHandler;
 import com.board.game.mankala.impl.PlayingStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public abstract class RealToBotPlayingStrategy implements PlayingStrategy{
+public class RealToBotPlayingStrategy implements PlayingStrategy{
 
     private final BoardRepository boardRepository;
     private final RealPlayerImpl realPlayer;
@@ -27,7 +26,7 @@ public abstract class RealToBotPlayingStrategy implements PlayingStrategy{
         return StrategyName.REALTOBOT;
     }
 
-    public Board startPlayByRealPlayer(Board board, int pitId) {
+    public Board playByRealPlayer(Board board, int pitId) {
         int chosenPitValue = board.getRealPits().get(pitId);
 
         if (chosenPitValue == kalahaSetting.getZero()) {
@@ -35,8 +34,12 @@ public abstract class RealToBotPlayingStrategy implements PlayingStrategy{
         }
 
         getBoardAfterRealPlayerMove(board, pitId, chosenPitValue);
-        getBoardAfterBotPlayerMove(board, kalahaSetting.getBotRandomPitId());
+        return boardRepository.findById(board.getId()).orElseThrow(KalahaBoardNotFoundException::new);
+    }
 
+    public Board playByBotPlayer(Board board) {
+
+        getBoardAfterBotPlayerMove(board, kalahaSetting.getBotRandomPitId());
         return boardRepository.findById(board.getId()).orElseThrow(KalahaBoardNotFoundException::new);
     }
 
@@ -49,4 +52,16 @@ public abstract class RealToBotPlayingStrategy implements PlayingStrategy{
         botPlayer.sow(board, pitId, pitValue, PlayerType.BOT);
     }
 
+    public Board checkGameEnded(Board board){
+        if (board.getRealPits().values().stream().allMatch(value -> value == 0) ||
+                board.getBotPits().values().stream().allMatch(value -> value == 0)) {
+
+            board.setRealStorage(board.getRealStorage() + board.getRealPits().values().stream().mapToInt(Integer::intValue).sum());
+            board.getRealPits().replaceAll((k, v) -> v = 0);
+            board.setBotStorage(board.getBotStorage() + board.getBotPits().values().stream().mapToInt(Integer::intValue).sum());
+            board.getBotPits().replaceAll((k, v) -> v = 0);
+            boardRepository.save(board);
+        }
+        throw new KalahaWebException("Kalaha game board has not ended yet!");
+    }
 }

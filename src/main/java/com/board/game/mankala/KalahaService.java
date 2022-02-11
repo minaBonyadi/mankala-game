@@ -5,8 +5,8 @@ import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardDto;
 import com.board.game.mankala.data.BoardRepository;
-import com.board.game.mankala.exception.KalahaWebException;
-import lombok.RequiredArgsConstructor;
+import com.board.game.mankala.exception.KalahaBoardNotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class KalahaService {
 
     private final KalahaPropertiesConfiguration kalahaSetting;
@@ -27,33 +27,70 @@ public class KalahaService {
         Map<Integer, Integer> realPlayer = new HashMap<>();
 
         int counter = 0;
+        int botPitId = kalahaSetting.getPitsIdMinSize();
+        int realPitId = kalahaSetting.getPitsIdMinSize();
 
-        while(counter <= kalahaSetting.getBotRandomPitId()) {
+        while(counter < kalahaSetting.getAllPitsCount()) {
 
             if (counter < kalahaSetting.getEachPlayerPitsCount()) {
-                botPlayer.put(counter, kalahaSetting.getPitsMaxLimit());
-                counter++;
+                botPlayer.put(botPitId++, kalahaSetting.getPitsMaxValueLimit());
+
             }else {
-                counter = kalahaSetting.getPitsMaxLimit();
-                realPlayer.put(counter, kalahaSetting.getPitsMaxLimit());
-                counter--;
+                realPlayer.put(realPitId++, kalahaSetting.getPitsMaxValueLimit());
             }
+            counter++;
         }
 
        return boardRepository.save(Board.builder()
-               .realStorage(0)
-               .botStorage(0)
+               .realStorage(kalahaSetting.getStorageMinValue())
+               .botStorage(kalahaSetting.getStorageMinValue())
                .botPits(botPlayer)
                .realPits(realPlayer)
                .build());
     }
 
-    public BoardDto makeTurn(BoardDto boardDto , int pitId){
+    public BoardDto makeTurnToRealPlayer(BoardDto boardDto , int pitId){
         Board board = boardRepository.findById(boardDto.getId())
-                .orElseThrow(() -> new KalahaWebException(String.format("This {%s} real player does not found!", boardDto)));
+                .orElseThrow(KalahaBoardNotFoundException::new);
 
-        realToBotPlayingStrategy.startPlayByRealPlayer(board, pitId);
-        return BoardDto.builder().build();
+        Board boardResult = realToBotPlayingStrategy.playByRealPlayer(board, pitId);
+
+        return BoardDto.builder()
+                .id(boardResult.getId())
+                .realPits(boardResult.getRealPits())
+                .botPits(boardResult.getBotPits())
+                .realStorage(boardResult.getRealStorage())
+                .botStorage(boardResult.getBotStorage())
+                .build();
     }
 
+    public BoardDto makeTurnToBotPlayer(BoardDto boardDto) {
+        Board board = boardRepository.findById(boardDto.getId())
+                .orElseThrow(KalahaBoardNotFoundException::new);
+
+        Board boardResult = realToBotPlayingStrategy.playByBotPlayer(board);
+
+        return BoardDto.builder()
+                .id(boardResult.getId())
+                .realPits(boardResult.getRealPits())
+                .botPits(boardResult.getBotPits())
+                .realStorage(boardResult.getRealStorage())
+                .botStorage(boardResult.getBotStorage())
+                .build();
+    }
+
+    public BoardDto checkGameEnded(BoardDto boardDto) {
+        Board board = boardRepository.findById(boardDto.getId())
+                .orElseThrow(KalahaBoardNotFoundException::new);
+
+        Board boardResult = realToBotPlayingStrategy.checkGameEnded(board);
+
+        return BoardDto.builder()
+                .id(boardResult.getId())
+                .realPits(boardResult.getRealPits())
+                .botPits(boardResult.getBotPits())
+                .realStorage(boardResult.getRealStorage())
+                .botStorage(boardResult.getBotStorage())
+                .build();
+    }
 }
