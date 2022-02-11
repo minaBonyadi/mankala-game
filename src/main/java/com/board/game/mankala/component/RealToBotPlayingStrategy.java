@@ -19,7 +19,6 @@ public class RealToBotPlayingStrategy implements PlayingStrategy{
     private final RealPlayerImpl realPlayer;
     private final BotPlayerImpl botPlayer;
     private final KalahaPropertiesConfiguration kalahaSetting;
-    private final RealToBotStrategyRulesImpl ruleHandler;
 
     @Override
     public StrategyName getStrategyName() {
@@ -38,8 +37,12 @@ public class RealToBotPlayingStrategy implements PlayingStrategy{
     }
 
     public Board playByBotPlayer(Board board) {
+        int chosenPitValue = kalahaSetting.getBotRandomPitId();
 
-        getBoardAfterBotPlayerMove(board, kalahaSetting.getBotRandomPitId());
+        while (chosenPitValue == 0){
+            chosenPitValue = kalahaSetting.getBotRandomPitId();
+        }
+        getBoardAfterBotPlayerMove(board, chosenPitValue);
         return boardRepository.findById(board.getId()).orElseThrow(KalahaBoardNotFoundException::new);
     }
 

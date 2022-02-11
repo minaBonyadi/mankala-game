@@ -1,6 +1,6 @@
 package com.board.game.mankala.rest_controller;
 
-import com.board.game.mankala.KalahaService;
+import com.board.game.mankala.service.KalahaService;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardDto;
 import lombok.RequiredArgsConstructor;

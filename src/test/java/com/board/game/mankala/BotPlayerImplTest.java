@@ -8,6 +8,7 @@ import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
+import com.board.game.mankala.service.KalahaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

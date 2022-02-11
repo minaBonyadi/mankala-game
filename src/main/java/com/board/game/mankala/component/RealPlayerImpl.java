@@ -6,11 +6,11 @@ import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.KalahaWebException;
 import com.board.game.mankala.handler.SowHandler;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RealPlayerImpl implements SowHandler {
 
     private final KalahaPropertiesConfiguration kalahaSetting;

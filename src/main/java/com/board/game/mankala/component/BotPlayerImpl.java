@@ -5,11 +5,12 @@ import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.handler.SowHandler;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BotPlayerImpl implements SowHandler {
 
     private final RealToBotStrategyRulesImpl ruleHandler;

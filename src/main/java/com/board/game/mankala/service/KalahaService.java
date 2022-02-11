@@ -1,4 +1,4 @@
-package com.board.game.mankala;
+package com.board.game.mankala.service;
 
 import com.board.game.mankala.component.RealToBotPlayingStrategy;
 import com.board.game.mankala.config.KalahaPropertiesConfiguration;
@@ -6,6 +6,7 @@ import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardDto;
 import com.board.game.mankala.data.BoardRepository;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
+import com.board.game.mankala.exception.KalahaOutOfBandException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,8 @@ public class KalahaService {
     }
 
     public BoardDto makeTurnToRealPlayer(BoardDto boardDto , int pitId){
+        validateChosenPitId(pitId);  // validate chosen pit Id
+
         Board board = boardRepository.findById(boardDto.getId())
                 .orElseThrow(KalahaBoardNotFoundException::new);
 
@@ -62,6 +65,12 @@ public class KalahaService {
                 .realStorage(boardResult.getRealStorage())
                 .botStorage(boardResult.getBotStorage())
                 .build();
+    }
+
+    private void validateChosenPitId(int pitId) {
+        if (pitId > kalahaSetting.getPitsIdMaxSize()|| pitId < kalahaSetting.getPitsIdMinSize()){
+            throw new KalahaOutOfBandException("Chosen pit should be between 1 to 6!");
+        }
     }
 
     public BoardDto makeTurnToBotPlayer(BoardDto boardDto) {

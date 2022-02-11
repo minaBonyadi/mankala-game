@@ -1,16 +1,22 @@
 package com.board.game.mankala;
 
+import com.board.game.mankala.config.KalahaPropertiesConfiguration;
 import com.board.game.mankala.config.TestRedisConfiguration;
 import com.board.game.mankala.data.Board;
 import com.board.game.mankala.data.BoardRepository;
-import com.board.game.mankala.exception.KalahaBoardNotFoundException;
+import com.board.game.mankala.exception.KalahaOutOfBandException;
 import com.board.game.mankala.exception.KalahaWebException;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,11 +24,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +41,9 @@ class KalahaServiceTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Value("${kalaha.board.game.generate.bot.random.pit.id}")
+    private int randomBotPitId;
 
     private static final String CREATE_BOARD_ENDPOINT = "/game/create-board";
     private static final String REAL_PLAYER_MAKE_TURN_ENDPOINT = "/game/real/make-turn";
@@ -105,23 +112,16 @@ class KalahaServiceTest {
             put(6, 6);
         }};
 
-        Board board = Board.builder()
-                .id("50b66cc4-d64a-456b-b202-2c258100f057")
-                .realStorage(0)
-                .botStorage(0)
-                .realPits(realPits)
-                .botPits(botPits).build();
+        saveNewBoard(realPits, botPits, 0, 0);
 
-        boardRepository.save(board);
-
-        String str = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6}," +
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6}," +
                 "\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"realStorage\":0,\"botStorage\":0}";
 
         //************************
         //          WHEN
         //************************
         MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/6")
-                .content(str)
+                .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -132,7 +132,7 @@ class KalahaServiceTest {
         //          THEN
         //************************
         // check rest response
-        assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
+        assertThat(restResponse).isNotEmpty();
 
         JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":0}," +
                 "\"botPits\":{\"1\":6,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":7},\"botStorage\":0,\"realStorage\":1}", true);
@@ -162,23 +162,16 @@ class KalahaServiceTest {
             put(6, 22);
         }};
 
-        Board board = Board.builder()
-                .id("50b66cc4-d64a-456b-b202-2c258100f057")
-                .realStorage(18)
-                .botStorage(20)
-                .realPits(realPits)
-                .botPits(botPits).build();
+        saveNewBoard(realPits, botPits, 18, 20);
 
-        boardRepository.save(board);
-
-        String str = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
                 "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
 
         //************************
         //          WHEN
         //************************
         MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/1")
-                .content(str)
+                .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -219,16 +212,9 @@ class KalahaServiceTest {
             put(6, 22);
         }};
 
-        Board board = Board.builder()
-                .id("50b66cc4-d64a-456b-b202-2c258100f057")
-                .realStorage(18)
-                .botStorage(20)
-                .realPits(realPits)
-                .botPits(botPits).build();
+        saveNewBoard(realPits, botPits, 18, 20);
 
-        boardRepository.save(board);
-
-        String str = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
                 "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
 
         //************************
@@ -238,7 +224,7 @@ class KalahaServiceTest {
         //          THEN
         //************************
         mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/2")
-                .content(str)
+                .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -246,5 +232,156 @@ class KalahaServiceTest {
                 .andExpect(result -> assertEquals("Chosen pit does not filled, please choose another pit!",
                         Objects.requireNonNull(result.getResolvedException()).getMessage()))
                 .andReturn();
+    }
+
+    @Test
+    void test_real_player_make_turn_and_choose_wrong_pit_id_service() throws Exception {
+        //************************
+        //          Given
+        //************************
+        //Board state
+        HashMap<Integer, Integer> realPits = new HashMap<>() {{
+            put(1, 1);
+            put(2, 0);
+            put(3, 0);
+            put(4, 0);
+            put(5, 4);
+            put(6, 0);
+        }};
+
+        HashMap<Integer, Integer> botPits = new HashMap<>() {{
+            put(1, 0);
+            put(2, 1);
+            put(3, 1);
+            put(4, 0);
+            put(5, 0);
+            put(6, 22);
+        }};
+
+        saveNewBoard(realPits, botPits, 18, 20);
+
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
+
+        //************************
+        //          WHEN
+        //************************
+        //************************
+        //          THEN
+        //************************
+        mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/7")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof KalahaOutOfBandException))
+                .andExpect(result -> assertEquals("Chosen pit should be between 1 to 6!",
+                        Objects.requireNonNull(result.getResolvedException()).getMessage()))
+                .andReturn();
+    }
+
+    @Test
+    void test_bot_player_make_turn_at_first_turn_service() throws Exception {
+        //************************
+        //          Given
+        //************************
+        //Board state
+        HashMap<Integer, Integer> realPits = new HashMap<>() {{
+            put(1, 6);
+            put(2, 6);
+            put(3, 6);
+            put(4, 6);
+            put(5, 6);
+            put(6, 6);
+        }};
+
+        HashMap<Integer, Integer> botPits = new HashMap<>() {{
+            put(1, 6);
+            put(2, 6);
+            put(3, 6);
+            put(4, 6);
+            put(5, 6);
+            put(6, 6);
+        }};
+
+        saveNewBoard(realPits, botPits, 0, 0);
+
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6}," +
+                "\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"realStorage\":0,\"botStorage\":0}";
+
+        //************************
+        //          WHEN
+        //************************
+
+        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(BOT_PLAYER_MAKE_TURN_ENDPOINT)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String restResponse = responseBody.getResponse().getContentAsString();
+        //************************
+        //          THEN
+        //************************
+        // check rest response
+        assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
+
+        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":7,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":6}," +
+                "\"botPits\":{\"1\":0,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"botStorage\":1,\"realStorage\":0}", true);
+    }
+
+    @Test
+    void test_bot_player_make_turn_and_choose_zero_pit_value_service() throws Exception {
+        //************************
+        //          Given
+        //************************
+        //Board state
+        HashMap<Integer, Integer> realPits = new HashMap<>() {{
+            put(1, 1);
+            put(2, 0);
+            put(3, 0);
+            put(4, 0);
+            put(5, 4);
+            put(6, 0);
+        }};
+
+        HashMap<Integer, Integer> botPits = new HashMap<>() {{
+            put(1, 0);
+            put(2, 1);
+            put(3, 1);
+            put(4, 0);
+            put(5, 0);
+            put(6, 22);
+        }};
+
+        saveNewBoard(realPits, botPits, 18, 20);
+
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
+
+        //************************
+        //          WHEN
+        //************************
+        //************************
+        //          THEN
+        //************************
+        mockMvc.perform(MockMvcRequestBuilders.post(BOT_PLAYER_MAKE_TURN_ENDPOINT)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    private void saveNewBoard(HashMap<Integer, Integer> realPits, HashMap<Integer, Integer> botPits, int i, int i2) {
+        Board board = Board.builder()
+                .id("50b66cc4-d64a-456b-b202-2c258100f057")
+                .realStorage(i)
+                .botStorage(i2)
+                .realPits(realPits)
+                .botPits(botPits).build();
+
+        boardRepository.save(board);
     }
 }
