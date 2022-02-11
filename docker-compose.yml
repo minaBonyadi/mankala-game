@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  redis:
+    image: 'redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
+  mancala-service:
+    container_name: mankala-game
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mancala:latest
+    links:
+      - redis
+    environment:
+      REDIS_HOST: redis
+    ports:
+      - 8080:8080

@@ -1,0 +1,16 @@
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/enumeration/PlayerType.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/impl/PlayingStrategy.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/component/RuleHandler.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/exception/KalahaException.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/data/BoardDto.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/data/BoardRepository.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/component/RealToBotPlayingStrategy.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/component/RedisProperties.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/rest_controller/KalahaController.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/enumeration/StrategyName.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/MankalaApplication.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/config/KalahaPropertiesConfiguration.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/KalahaService.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/data/Board.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/component/RulesManagementImpl.java
+/home/mina/Documents/mankala-game/src/main/java/com/board/game/mankala/config/RedisConfiguration.java
