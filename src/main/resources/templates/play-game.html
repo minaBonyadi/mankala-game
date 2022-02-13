@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Play game</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"
+            integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+          integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script type="text/javascript" th:src="@{/js/playGame.js}"></script>
+    <link th:href="@{/styles/game.css}" rel="stylesheet" />
+
+</head>
+<body>
+<div class="ui three column grid" style="margin-top: 3%">
+<!--    <div class="column">-->
+<!--        <div class="ui fluid card">-->
+<!--            <div class="content">-->
+<!--                <a href="/create-player">Create player</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="column">-->
+<!--        <div class="ui fluid card">-->
+<!--            <div class="content">-->
+<!--                <a href="/create-game">Create game</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="column">
+        <div class="ui fluid card">
+            <div class="content">
+                <a href="/play-game">Play Game</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui centered card turn">
+
+
+    <div class="content" style="display:none">
+        <div class="ui message" id="color">
+            <i class="close icon"></i>
+            <div class="header" id="response">
+                Your user registration was successful.
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <a class="header" id="playerName">Please first create a game.</a>
+    </div>
+</div>
+
+<div class="ui centered card" centered style="width: 70%; margin-top: 10%">
+    <div class="ui grid centered">
+        <div class="eight column row">
+            <div class=" mancala" id="13" >
+                0
+            </div>
+            <div class="column board" >
+                <div class="column cups-up item" id="12">6</div>
+                <div class="column cups-down item" id="0" >6</div>
+            </div>
+            <div class="column board" >
+                <div class="column cups-up item" id="11" >6</div>
+                <div class="column cups-down item" id="1" >6</div>
+            </div>
+            <div class="column board" >
+                <div class="column cups-up item" id="10" >6</div>
+                <div class="column cups-down item" id="2" >6</div>
+            </div>
+            <div class="column board" >
+                <div class="column cups-up item" id="9" >6</div>
+                <div class="column cups-down item" id="3" >6</div>
+            </div>
+            <div class="column board" >
+                <div class="column cups-up item" id="8" >6</div>
+                <div class="column cups-down item" id="4" >6</div>
+            </div>
+            <div class="column board" >
+                <div class="column cups-up item" id="7" >6</div>
+                <div class="column cups-down item" id="5" >6</div>
+            </div>
+            <div class="mancala" id="6" >0</div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

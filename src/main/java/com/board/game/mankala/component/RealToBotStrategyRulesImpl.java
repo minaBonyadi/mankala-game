@@ -1,7 +1,7 @@
 package com.board.game.mankala.component;
 
-import com.board.game.mankala.config.KalahaPropertiesConfiguration;
-import com.board.game.mankala.data.Board;
+import com.board.game.mankala.config.MankalaPropertiesConfiguration;
+import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.handler.RuleHandler;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class RealToBotStrategyRulesImpl implements RuleHandler {
+public class RealToBotStrategyRulesImpl implements RuleHandler{
 
-    final BoardRepository boardRepository;
-    private final KalahaPropertiesConfiguration kalahaSetting;
+    private final BoardRepository boardRepository;
+    private final MankalaPropertiesConfiguration kalahaSetting;
 
     @Override
     public void switchPlayer(Board board, int pitValue, PlayerType playerType) {
@@ -42,28 +42,13 @@ public class RealToBotStrategyRulesImpl implements RuleHandler {
 
     @Override
     public void playAgain(Board board, PlayerType type, int pitId, int pitValue) {
-        if (pitValue == kalahaSetting.getZero() && !isTheEndOfTheGame(board)) {
-            if (type.equals(PlayerType.BOT)) {
-//                sowBotPlayer(board, kalahaSetting.getBotRandomPitId(), pitValue);
-            } else {
-//                sowRealPlayer(board, pitId, pitValue);
-            }
-        }
-    }
-
-    @Override
-    public boolean isTheEndOfTheGame(Board board) {
-        if (board.getRealPits().values().stream().allMatch(value -> value == 0) ||
-                board.getBotPits().values().stream().allMatch(value -> value == 0)) {
-
-            board.setRealStorage(board.getRealStorage() + board.getRealPits().values().stream().mapToInt(Integer::intValue).sum());
-            board.getRealPits().replaceAll((k, v) -> v = 0);
-            board.setBotStorage(board.getBotStorage() + board.getBotPits().values().stream().mapToInt(Integer::intValue).sum());
-            board.getBotPits().replaceAll((k, v) -> v = 0);
-            boardRepository.save(board);
-            return true;
-        }
-        return false;
+//        if (pitValue == kalahaSetting.getZero()) {
+//            if (type.equals(PlayerType.BOT)) {
+//               currentGameStrategy.play(board, kalahaSetting.getBotRandomPitId(), PlayerType.BOT);
+//            } else {
+//                currentGameStrategy.play(board, pitId, PlayerType.REAL);
+//            }
+//        }
     }
 
     private void switchToBotPlayer(Board board, int remainingPitValue){

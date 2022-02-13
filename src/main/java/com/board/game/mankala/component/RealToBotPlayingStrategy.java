@@ -1,24 +1,33 @@
 package com.board.game.mankala.component;
 
-import com.board.game.mankala.config.KalahaPropertiesConfiguration;
-import com.board.game.mankala.data.Board;
+import com.board.game.mankala.config.MankalaPropertiesConfiguration;
+import com.board.game.mankala.dto.BoardDto;
+import com.board.game.mankala.entity.Board;
+import com.board.game.mankala.enumeration.StrategyName;
+import com.board.game.mankala.impl.PlayingStrategy;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
-import com.board.game.mankala.enumeration.StrategyName;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
 import com.board.game.mankala.exception.KalahaWebException;
-import com.board.game.mankala.impl.PlayingStrategy;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class RealToBotPlayingStrategy implements PlayingStrategy{
+@AllArgsConstructor
+public class RealToBotPlayingStrategy implements PlayingStrategy {
 
     private final BoardRepository boardRepository;
     private final RealPlayerImpl realPlayer;
     private final BotPlayerImpl botPlayer;
-    private final KalahaPropertiesConfiguration kalahaSetting;
+    private final MankalaPropertiesConfiguration kalahaSetting;
+
+    @Override
+    public Board play(Board board, int pitId, PlayerType type) {
+        if (type.equals(PlayerType.BOT)){
+            return playByBotPlayer(board);
+        }
+        return playByRealPlayer(board, pitId);
+    }
 
     @Override
     public StrategyName getStrategyName() {
@@ -32,40 +41,22 @@ public class RealToBotPlayingStrategy implements PlayingStrategy{
             throw new KalahaWebException("Chosen pit does not filled, please choose another pit!");
         }
 
-        getBoardAfterRealPlayerMove(board, pitId, chosenPitValue);
+        realPlayer.sow(board, pitId, chosenPitValue, PlayerType.REAL);
         return boardRepository.findById(board.getId()).orElseThrow(KalahaBoardNotFoundException::new);
     }
 
     public Board playByBotPlayer(Board board) {
-        int chosenPitValue = kalahaSetting.getBotRandomPitId();
+        int chosenPitId = kalahaSetting.getBotRandomPitId();
+        int chosenPitValue = board.getBotPits().get(chosenPitId);
 
-        while (chosenPitValue == 0){
-            chosenPitValue = kalahaSetting.getBotRandomPitId();
+        int counter = 0 ;
+        while (chosenPitValue == 0 && counter <= kalahaSetting.getPitsIdMaxSize()){
+            chosenPitId = kalahaSetting.getBotRandomPitId();
+            chosenPitValue = board.getBotPits().get(chosenPitId);
+            counter++;
         }
-        getBoardAfterBotPlayerMove(board, chosenPitValue);
+
+        botPlayer.sow(board, chosenPitId, chosenPitValue, PlayerType.BOT);
         return boardRepository.findById(board.getId()).orElseThrow(KalahaBoardNotFoundException::new);
-    }
-
-    private void getBoardAfterRealPlayerMove(Board board, int pitId, int pitValue) {
-        realPlayer.sow(board, pitId, pitValue, PlayerType.REAL);
-    }
-
-    private void getBoardAfterBotPlayerMove(Board board, int pitId){
-        int pitValue = board.getBotPits().get(pitId);
-        botPlayer.sow(board, pitId, pitValue, PlayerType.BOT);
-    }
-
-    public Board checkGameEnded(Board board){
-        if (board.getRealPits().values().stream().allMatch(value -> value == 0) ||
-                board.getBotPits().values().stream().allMatch(value -> value == 0)) {
-
-            board.setRealStorage(board.getRealStorage() + board.getRealPits().values().stream().mapToInt(Integer::intValue).sum());
-            board.getRealPits().replaceAll((k, v) -> v = 0);
-            board.setBotStorage(board.getBotStorage() + board.getBotPits().values().stream().mapToInt(Integer::intValue).sum());
-            board.getBotPits().replaceAll((k, v) -> v = 0);
-            return boardRepository.save(board);
-        }else {
-            throw new KalahaWebException("Kalaha game board has not ended yet!");
-        }
     }
 }

@@ -1,7 +1,7 @@
 package com.board.game.mankala.component;
 
-import com.board.game.mankala.config.KalahaPropertiesConfiguration;
-import com.board.game.mankala.data.Board;
+import com.board.game.mankala.config.MankalaPropertiesConfiguration;
+import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.handler.SowHandler;
@@ -13,9 +13,16 @@ import org.springframework.stereotype.Component;
 public class BotPlayerImpl implements SowHandler {
 
     private final RealToBotStrategyRulesImpl ruleHandler;
-    private final KalahaPropertiesConfiguration kalahaSetting;
+    private final MankalaPropertiesConfiguration kalahaSetting;
     private final BoardRepository boardRepository;
 
+    /**
+     *
+     * @param board
+     * @param pitId
+     * @param pitValue
+     * @param type
+     */
     @Override
     public void sow(Board board, int pitId, int pitValue, PlayerType type) {
         board.getBotPits().put(pitId, kalahaSetting.getZero());

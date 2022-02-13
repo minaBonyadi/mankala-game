@@ -1,6 +1,6 @@
 package com.board.game.mankala.repository;
 
-import com.board.game.mankala.data.Board;
+import com.board.game.mankala.entity.Board;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

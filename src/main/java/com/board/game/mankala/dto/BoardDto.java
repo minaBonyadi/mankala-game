@@ -1,4 +1,4 @@
-package com.board.game.mankala.data;
+package com.board.game.mankala.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +14,5 @@ public class BoardDto {
     Map<Integer, Integer> botPits;
     int botStorage;
     int realStorage;
+
 }

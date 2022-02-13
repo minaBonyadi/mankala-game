@@ -1,5 +1,6 @@
-package com.board.game.mankala.data;
+package com.board.game.mankala.entity;
 
+import com.board.game.mankala.enumeration.GameState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +20,5 @@ public class Board implements Serializable {
     Map<Integer, Integer> realPits;
     int realStorage;
     int botStorage;
-
+    GameState gameState;
 }

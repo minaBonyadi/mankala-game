@@ -1,7 +1,7 @@
 package com.board.game.mankala.exception;
 
-import com.board.game.mankala.data.RestResponse;
-import com.board.game.mankala.data.RestResponseType;
+import com.board.game.mankala.dto.RestResponse;
+import com.board.game.mankala.dto.RestResponseType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

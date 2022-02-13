@@ -1,0 +1,40 @@
+.cups-up {
+    text-align: center;
+    border: 3px solid #41729F;
+    background: #41729F;
+    color: white;
+
+}
+
+.cups-down {
+    text-align: center;
+    border: 3px solid #41729F;
+    margin-top: 100%;
+    background: #41729F;
+    color: white;
+
+}
+
+.board {
+    background: #C3E0E5
+}
+
+.mancala {
+    text-align: center;
+    border: 3px solid #274472;
+    background: #274472;
+    color: white;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+    width: 10%;
+}
+
+.turn {
+    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center;
+    width: 10%;
+}

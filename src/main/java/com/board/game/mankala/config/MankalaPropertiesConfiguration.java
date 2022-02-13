@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties
 @Getter
-public class KalahaPropertiesConfiguration {
+public class MankalaPropertiesConfiguration {
     @Value("${spring.redis.host}")
     private String host;
 

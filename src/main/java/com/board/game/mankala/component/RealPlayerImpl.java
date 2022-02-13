@@ -1,7 +1,7 @@
 package com.board.game.mankala.component;
 
-import com.board.game.mankala.config.KalahaPropertiesConfiguration;
-import com.board.game.mankala.data.Board;
+import com.board.game.mankala.config.MankalaPropertiesConfiguration;
+import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.KalahaWebException;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class RealPlayerImpl implements SowHandler {
 
-    private final KalahaPropertiesConfiguration kalahaSetting;
+    private final MankalaPropertiesConfiguration kalahaSetting;
     private final RealToBotStrategyRulesImpl ruleHandler;
     private final BoardRepository boardRepository;
 

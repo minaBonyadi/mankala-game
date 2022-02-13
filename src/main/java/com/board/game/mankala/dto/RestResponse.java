@@ -1,4 +1,4 @@
-package com.board.game.mankala.data;
+package com.board.game.mankala.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

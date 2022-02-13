@@ -1,19 +1,14 @@
-package com.board.game.mankala;
+package com.board.game.mankala.test.integration;
 
-import com.board.game.mankala.config.TestRedisConfiguration;
-import com.board.game.mankala.data.Board;
-import com.board.game.mankala.repository.BoardRepository;
+import com.board.game.mankala.MankalaAbstractTest;
+import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.exception.KalahaOutOfBandException;
 import com.board.game.mankala.exception.KalahaWebException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,21 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = TestRedisConfiguration.class)
 @AutoConfigureMockMvc
-class KalahaServiceTest {
+class MankalaServiceTest extends MankalaAbstractTest {
 
     @Autowired
     protected MockMvc mockMvc;
 
-    @Autowired
-    private BoardRepository boardRepository;
-
-    private static final String CREATE_BOARD_ENDPOINT = "/game/create-board";
-    private static final String REAL_PLAYER_MAKE_TURN_ENDPOINT = "/game/real/make-turn";
-    private static final String BOT_PLAYER_MAKE_TURN_ENDPOINT = "/game/bot/make-turn";
-    private static final String CHECK_GAME_ENDED = "/game/check-game-ended";
+    private static final String CREATE_BOARD_ENDPOINT = "/games/create-game";
+    private static final String REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT = "/games/make-turn";
 
     @Test
     void test_board_creation_service() throws Exception {
@@ -50,10 +38,10 @@ class KalahaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.get(CREATE_BOARD_ENDPOINT)
+        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(CREATE_BOARD_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         Board boardResult = boardRepository.findAll().get(0);
@@ -112,7 +100,7 @@ class KalahaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/6")
+        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/6")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -126,8 +114,8 @@ class KalahaServiceTest {
         // check rest response
         assertThat(restResponse).isNotEmpty();
 
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":0}," +
-                "\"botPits\":{\"1\":6,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":7},\"botStorage\":0,\"realStorage\":1}", true);
+        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":7,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":0}," +
+                "\"botPits\":{\"1\":0,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":7},\"botStorage\":1,\"realStorage\":1}", true);
     }
 
     @Test
@@ -162,7 +150,7 @@ class KalahaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/1")
+        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/1")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -215,7 +203,7 @@ class KalahaServiceTest {
         //************************
         //          THEN
         //************************
-        mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/2")
+        mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/2")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -261,7 +249,7 @@ class KalahaServiceTest {
         //************************
         //          THEN
         //************************
-        mockMvc.perform(MockMvcRequestBuilders.post(REAL_PLAYER_MAKE_TURN_ENDPOINT+"/7")
+        mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/7")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -273,157 +261,13 @@ class KalahaServiceTest {
     }
 
     @Test
-    void test_bot_player_make_turn_at_first_turn_service() throws Exception {
-        //************************
-        //          Given
-        //************************
-        //Board state
-        HashMap<Integer, Integer> realPits = new HashMap<>() {{
-            put(1, 6);
-            put(2, 6);
-            put(3, 6);
-            put(4, 6);
-            put(5, 6);
-            put(6, 6);
-        }};
-
-        HashMap<Integer, Integer> botPits = new HashMap<>() {{
-            put(1, 6);
-            put(2, 6);
-            put(3, 6);
-            put(4, 6);
-            put(5, 6);
-            put(6, 6);
-        }};
-
-        saveNewBoard(realPits, botPits, 0, 0);
-
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6}," +
-                "\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"realStorage\":0,\"botStorage\":0}";
-
-        //************************
-        //          WHEN
-        //************************
-
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(BOT_PLAYER_MAKE_TURN_ENDPOINT)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String restResponse = responseBody.getResponse().getContentAsString();
-        //************************
-        //          THEN
-        //************************
-        // check rest response
-        assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
-
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":7,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":6}," +
-                "\"botPits\":{\"1\":0,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"botStorage\":1,\"realStorage\":0}", true);
-    }
-
-    @Test
-    void test_bot_player_make_turn_and_choose_zero_pit_value_service() throws Exception {
-        //************************
-        //          Given
-        //************************
-        //Board state
-        HashMap<Integer, Integer> realPits = new HashMap<>() {{
-            put(1, 1);
-            put(2, 0);
-            put(3, 0);
-            put(4, 0);
-            put(5, 4);
-            put(6, 0);
-        }};
-
-        HashMap<Integer, Integer> botPits = new HashMap<>() {{
-            put(1, 0);
-            put(2, 1);
-            put(3, 1);
-            put(4, 0);
-            put(5, 0);
-            put(6, 22);
-        }};
-
-        saveNewBoard(realPits, botPits, 18, 20);
-
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
-                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
-
-        //************************
-        //          WHEN
-        //************************
-        //************************
-        //          THEN
-        //************************
-        mockMvc.perform(MockMvcRequestBuilders.post(BOT_PLAYER_MAKE_TURN_ENDPOINT)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-    }
-
-    @Test
-    void test_real_player_made_game_ended() throws Exception {
-        //************************
-        //          Given
-        //************************
-        //Board state
-        HashMap<Integer, Integer> realPits = new HashMap<>() {{
-            put(1, 0);
-            put(2, 0);
-            put(3, 0);
-            put(4, 0);
-            put(5, 0);
-            put(6, 0);
-        }};
-
-        HashMap<Integer, Integer> botPits = new HashMap<>() {{
-            put(1, 0);
-            put(2, 1);
-            put(3, 1);
-            put(4, 0);
-            put(5, 0);
-            put(6, 22);
-        }};
-
-        saveNewBoard(realPits, botPits, 18, 20);
-
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
-                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
-
-        //************************
-        //          WHEN
-        //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(CHECK_GAME_ENDED)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String restResponse = responseBody.getResponse().getContentAsString();
-        //************************
-        //          THEN
-        //************************
-        // check rest response
-        assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
-
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0}," +
-                "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":44,\"realStorage\":18}", true);
-    }
-
-    @Test
     void test_bot_player_made_game_ended() throws Exception {
         //************************
         //          Given
         //************************
         //Board state
         HashMap<Integer, Integer> botPits = new HashMap<>() {{
-            put(1, 0);
+            put(1, 1);
             put(2, 0);
             put(3, 0);
             put(4, 0);
@@ -448,7 +292,7 @@ class KalahaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(CHECK_GAME_ENDED)
+        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/3")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -463,7 +307,7 @@ class KalahaServiceTest {
         assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
 
         JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0}," +
-                "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":20,\"realStorage\":45}", true);
+                "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":21,\"realStorage\":45}", true);
     }
 
     private void saveNewBoard(HashMap<Integer, Integer> realPits, HashMap<Integer, Integer> botPits, int realStorage, int botStorage) {
