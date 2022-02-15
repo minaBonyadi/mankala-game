@@ -22,6 +22,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestResponse(RestResponseType.ERROR, ex.getMessage()));
     }
 
+    @ExceptionHandler(value = {KalahaIsTheWrongTurnException.class})
+    protected ResponseEntity<RestResponse> handleMakeTheWrongTurn(KalahaIsTheWrongTurnException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new RestResponse(RestResponseType.WARNING, ex.getMessage()));
+    }
+
     @ExceptionHandler(value = {KalahaWebException.class})
     protected ResponseEntity<RestResponse> handleWebException(RuntimeException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestResponse(RestResponseType.WARNING, ex.getMessage()));

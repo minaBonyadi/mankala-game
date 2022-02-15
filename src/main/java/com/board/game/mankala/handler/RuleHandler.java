@@ -8,7 +8,4 @@ public interface RuleHandler {
     void switchPlayer(Board board, int pitId, PlayerType type);
 
     void getExtra(Board board, int pitId , PlayerType type);
-
-    void playAgain(Board board, PlayerType type, int pitId, int pitValue);
-
 }

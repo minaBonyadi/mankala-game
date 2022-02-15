@@ -20,5 +20,7 @@ public class Board implements Serializable {
     Map<Integer, Integer> realPits;
     int realStorage;
     int botStorage;
+    boolean isRealTurn;
+    boolean isBotTurn;
     GameState gameState;
 }

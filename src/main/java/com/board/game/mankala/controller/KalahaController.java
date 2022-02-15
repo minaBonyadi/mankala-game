@@ -1,7 +1,7 @@
 package com.board.game.mankala.controller;
 
+import com.board.game.mankala.dto.board.BoardDto;
 import com.board.game.mankala.service.MankalaService;
-import com.board.game.mankala.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class KalahaController {
 
     private final MankalaService mankalaService;
 
-    @PostMapping("/create-game")
+    @PostMapping("/create")
     public ResponseEntity<BoardDto> createGame() {
         return new ResponseEntity<>(mankalaService.createGame(), HttpStatus.CREATED);
     }

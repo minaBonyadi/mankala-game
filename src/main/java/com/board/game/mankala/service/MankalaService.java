@@ -1,12 +1,13 @@
 package com.board.game.mankala.service;
 
-import com.board.game.mankala.component.RealToBotPlayingStrategy;
 import com.board.game.mankala.config.MankalaPropertiesConfiguration;
-import com.board.game.mankala.dto.BoardDto;
+import com.board.game.mankala.dto.board.BoardDto;
+import com.board.game.mankala.dto.board.StoneDto;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.GameState;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
+import com.board.game.mankala.exception.KalahaIsTheWrongTurnException;
 import com.board.game.mankala.impl.PlayingStrategy;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
@@ -15,7 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,7 +28,6 @@ public class MankalaService {
 
     private final MankalaPropertiesConfiguration mankalaSetting;
     private final BoardRepository boardRepository;
-    private final RealToBotPlayingStrategy realToBotPlayingStrategy;
     private final GameStrategyFactory gameStrategyFactory;
 
     private PlayingStrategy getGameStrategy(){
@@ -33,38 +35,27 @@ public class MankalaService {
     }
 
     public BoardDto createGame(){
-        Map<Integer, Integer> botPlayer = new HashMap<>();
-        Map<Integer, Integer> realPlayer = new HashMap<>();
+        Board board = createBoard();
+        log.info(String.format("A new game is create with id {%s}", board.getId()));
 
-        createBoard(botPlayer, realPlayer);
-
-        boardRepository.save(Board.builder()
-               .realStorage(mankalaSetting.getStorageMinValue())
-               .botStorage(mankalaSetting.getStorageMinValue())
-               .botPits(botPlayer)
-               .realPits(realPlayer)
-               .gameState(GameState.ACTIVE)
-               .build());
-
-       return BoardDto.builder()
+        return BoardDto.builder()
+                .id(board.getId())
                 .realStorage(mankalaSetting.getStorageMinValue())
                 .botStorage(mankalaSetting.getStorageMinValue())
-                .botPits(botPlayer)
-                .realPits(realPlayer)
+                .botPits(getBotPitsInDto(board.getBotPits()))
+                .realPits(getRealPitsInDto(board.getBotPits()))
                 .build();
     }
 
-    public BoardDto makeTurn(BoardDto boardDto , int pitId){
+    public BoardDto makeTurn(BoardDto boardDto , int pitId) {
         makeTurnToRealPlayer(boardDto, pitId);
         makeTurnToBotPlayer(boardDto);
-
-        Board boardResult = boardRepository.findById(boardDto.getId()).orElseThrow(KalahaBoardNotFoundException::new);
-        checkGameEnded(boardResult);
+        Board boardResult = checkGameEnded(boardDto);
 
         return BoardDto.builder()
                 .id(boardResult.getId())
-                .realPits(boardResult.getRealPits())
-                .botPits(boardResult.getBotPits())
+                .realPits(getRealPitsInDto(boardResult.getRealPits()))
+                .botPits(getBotPitsInDto(boardResult.getBotPits()))
                 .realStorage(boardResult.getRealStorage())
                 .botStorage(boardResult.getBotStorage())
                 .build();
@@ -76,6 +67,10 @@ public class MankalaService {
         Board board = boardRepository.findById(boardDto.getId())
                 .orElseThrow(KalahaBoardNotFoundException::new);
 
+        if (!board.isRealTurn()) {
+            makeTurnToBotPlayer(boardDto);
+            throw new KalahaIsTheWrongTurnException("sorry, It is bot player turning again!");
+        }
         getGameStrategy().play(board, pitId, PlayerType.REAL);
     }
 
@@ -90,10 +85,16 @@ public class MankalaService {
         Board board = boardRepository.findById(boardDto.getId())
                 .orElseThrow(KalahaBoardNotFoundException::new);
 
+        if (!board.isBotTurn()) {
+            throw new KalahaIsTheWrongTurnException("It is real player turning again!");
+        }
         getGameStrategy().play(board, mankalaSetting.getZero(), PlayerType.BOT);
     }
 
-    private void createBoard(Map<Integer, Integer> botPlayer, Map<Integer, Integer> realPlayer) {
+    private Board createBoard() {
+        Map<Integer, Integer> botPlayer = new HashMap<>();
+        Map<Integer, Integer> realPlayer = new HashMap<>();
+
         int counter = 0;
         int botPitId = mankalaSetting.getPitsIdMinSize();
         int realPitId = mankalaSetting.getPitsIdMinSize();
@@ -108,9 +109,20 @@ public class MankalaService {
             }
             counter++;
         }
+        return boardRepository.save(Board.builder()
+                .realStorage(mankalaSetting.getStorageMinValue())
+                .botStorage(mankalaSetting.getStorageMinValue())
+                .botPits(botPlayer)
+                .realPits(realPlayer)
+                .isBotTurn(true)
+                .isRealTurn(true)
+                .gameState(GameState.ACTIVE)
+                .build());
     }
 
-    private void checkGameEnded(Board board) {
+    private Board checkGameEnded(BoardDto boardDto) {
+        Board board = boardRepository.findById(boardDto.getId()).orElseThrow(KalahaBoardNotFoundException::new);
+
         if (board.getRealPits().values().stream().allMatch(value -> value == 0) ||
                 board.getBotPits().values().stream().allMatch(value -> value == 0)) {
 
@@ -119,9 +131,22 @@ public class MankalaService {
             board.setBotStorage(board.getBotStorage() + board.getBotPits().values().stream().mapToInt(Integer::intValue).sum());
             board.getBotPits().replaceAll((k, v) -> v = 0);
             board.setGameState(GameState.STOPPED);
-            boardRepository.save(board);
         }else {
             log.info("This mankala game has not ended yet!");
         }
+        return boardRepository.save(board);
     }
+
+    private List<StoneDto> getRealPitsInDto(Map<Integer, Integer> boardRealPits) {
+        List<StoneDto> realPits = new ArrayList<>();
+        boardRealPits.forEach((key, value)-> realPits.add(new StoneDto(key, value)));
+        return realPits;
+    }
+
+    private List<StoneDto> getBotPitsInDto(Map<Integer, Integer> boardBotPits){
+        List<StoneDto> botPits = new ArrayList<>();
+        boardBotPits.forEach((key, value)-> botPits.add(new StoneDto(key, value)));
+        return botPits;
+    }
+
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class RealPlayerImpl implements SowHandler {
 
     private final MankalaPropertiesConfiguration kalahaSetting;
-    private final RealToBotStrategyRulesImpl ruleHandler;
+    private final RulesImpl ruleHandler;
     private final BoardRepository boardRepository;
 
     @Override
@@ -39,7 +39,7 @@ public class RealPlayerImpl implements SowHandler {
             if (pitId == board.getRealPits().size() && pitValue > kalahaSetting.getZero()) {
                 board.setRealStorage(board.getRealStorage() + 1);
                 pitValue--;
-                ruleHandler.playAgain(board, PlayerType.REAL, pitId, pitValue);
+                isRealTurnAgain(board, pitValue);
                 if (pitValue > kalahaSetting.getZero()) {
                     ruleHandler.switchPlayer(board, pitValue, PlayerType.REAL); //choosen pit id should used instaed
                     break;
@@ -55,5 +55,15 @@ public class RealPlayerImpl implements SowHandler {
         }
         throw new KalahaWebException(String.format("Can not find the previous value of this pit {%s}", pitId));
 
+    }
+
+    private void isRealTurnAgain(Board board, int pitValue) {
+        if (pitValue == kalahaSetting.getZero()) {
+            board.setBotTurn(false);
+            board.setRealTurn(true); // it is real player turning again
+        }else {
+            board.setBotTurn(true);
+        }
+        boardRepository.save(board);
     }
 }

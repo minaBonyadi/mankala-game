@@ -1,33 +1,58 @@
 package com.board.game.mankala.test.unit;
 
-import com.board.game.mankala.MankalaAbstractTest;
 import com.board.game.mankala.component.RealPlayerImpl;
-import com.board.game.mankala.component.RealToBotStrategyRulesImpl;
+import com.board.game.mankala.component.RulesImpl;
 import com.board.game.mankala.config.MankalaPropertiesConfiguration;
+import com.board.game.mankala.config.TestRedisConfiguration;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
+import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.service.MankalaService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
+import redis.embedded.RedisServer;
 
 import java.util.HashMap;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-class RealPlayerImplTest extends MankalaAbstractTest {
+
+@SpringBootTest
+class RealPlayerImplTest {
 
     @Autowired
     private RealPlayerImpl realPlayer;
 
     @Autowired
-    private RealToBotStrategyRulesImpl ruleHandler;
+    public BoardRepository boardRepository;
+
+    @Autowired
+    private RulesImpl ruleHandler;
+
+    @Autowired
+    private MankalaPropertiesConfiguration kalahaSetting;
 
     @MockBean
-    private MankalaPropertiesConfiguration kalahaSetting;
-    @MockBean
     private MankalaService mankalaService;
+
+    private RedisServer redisServer;
+
+    @BeforeEach
+    public void setUp() {
+        try {
+            redisServer = RedisServer.builder().port(6370).build();
+            redisServer.start();
+        } catch (Exception e) {
+            //do nothing
+        }
+    }
 
     @Test
     void when_real_player_move_should_not_get_extra_pit_from_bot() {

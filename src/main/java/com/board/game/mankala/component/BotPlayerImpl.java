@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class BotPlayerImpl implements SowHandler {
 
-    private final RealToBotStrategyRulesImpl ruleHandler;
+    private final RulesImpl ruleHandler;
     private final MankalaPropertiesConfiguration kalahaSetting;
     private final BoardRepository boardRepository;
 
@@ -31,7 +31,7 @@ public class BotPlayerImpl implements SowHandler {
 
         while (pitValue > kalahaSetting.getZero()) {
 
-            if (pitId > 1 && pitId <= board.getBotPits().size()) {
+            if (pitId > kalahaSetting.getPitsIdMinSize() && pitId <= board.getBotPits().size()) {
                 pitId--;
                 previousValueOfCurrentIndex = getBotPreviousValue(board, pitId);
                 board.getBotPits().put(pitId, board.getBotPits().get(pitId) + 1);
@@ -43,10 +43,10 @@ public class BotPlayerImpl implements SowHandler {
                 ruleHandler.getExtra(board, pitId++, PlayerType.BOT);
             }
 
-            if (pitId == 1 && pitValue > kalahaSetting.getZero()) {
+            if (pitId == kalahaSetting.getPitsIdMinSize() && pitValue > kalahaSetting.getZero()) {
                 board.setBotStorage(board.getBotStorage() + 1);
                 pitValue--;
-                ruleHandler.playAgain(board, PlayerType.BOT, pitId, pitValue);
+                isBotTurn(board, pitValue);
                 if (pitValue > kalahaSetting.getZero()) {
                     ruleHandler.switchPlayer(board, pitValue, PlayerType.BOT);
                     break;
@@ -59,4 +59,15 @@ public class BotPlayerImpl implements SowHandler {
     private int getBotPreviousValue(Board board, int pitId) {
         return board.getBotPits().get(pitId);
     }
+
+    private void isBotTurn(Board board, int pitValue) {
+        if (pitValue == kalahaSetting.getZero()) {
+            board.setRealTurn(false);
+            board.setBotTurn(true); // it is bot player turning again
+        }else {
+            board.setRealTurn(true);
+        }
+        boardRepository.save(board);
+    }
+
 }

@@ -1,7 +1,7 @@
 # mina bonyad
 
 
-http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
+http://localhost:8081/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
@@ -36,6 +36,7 @@ git push -uf origin master
 
 Use the built-in continuous integration in GitLab.
 
+- [ ] docker-compose up --build
 - [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
 - [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
 - [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
