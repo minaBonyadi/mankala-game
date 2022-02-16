@@ -40,12 +40,16 @@ public class GameEnded {
     }
 
     private void whoIsWinner(Board board) {
+
         if (board.getBotStorage() > board.getRealStorage()) {
             log.info("Bot won the game :)");
+
         }else if (board.getBotStorage() < board.getRealStorage()) {
             log.info("Real wonThe game :)");
+
         }else {
             log.info("No one won the game :|");
+
         }
     }
 }
