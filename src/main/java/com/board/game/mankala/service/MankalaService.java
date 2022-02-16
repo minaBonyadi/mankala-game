@@ -8,7 +8,7 @@ import com.board.game.mankala.enumeration.GameState;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.enumeration.StrategyName;
 import com.board.game.mankala.exception.KalahaIsTheWrongTurnException;
-import com.board.game.mankala.impl.PlayingStrategy;
+import com.board.game.mankala.strategy.PlayingStrategy;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
 import com.board.game.mankala.exception.KalahaOutOfBandException;

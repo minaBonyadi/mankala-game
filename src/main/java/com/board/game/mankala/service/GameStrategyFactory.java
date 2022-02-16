@@ -1,7 +1,7 @@
 package com.board.game.mankala.service;
 
 import com.board.game.mankala.enumeration.StrategyName;
-import com.board.game.mankala.impl.PlayingStrategy;
+import com.board.game.mankala.strategy.PlayingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

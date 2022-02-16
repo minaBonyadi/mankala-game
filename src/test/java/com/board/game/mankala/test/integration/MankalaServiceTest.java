@@ -42,12 +42,10 @@ class MankalaServiceTest {
     @Autowired
     public BoardRepository boardRepository;
 
-    private RedisServer redisServer;
-
     @BeforeEach
     public void setUp() {
         try {
-            redisServer = RedisServer.builder().port(6370).build();
+            RedisServer redisServer = RedisServer.builder().port(6370).build();
             redisServer.start();
         } catch (Exception ex){
             //do nothing

@@ -1,18 +1,14 @@
 package com.board.game.mankala.component;
 
 import com.board.game.mankala.config.MankalaPropertiesConfiguration;
-import com.board.game.mankala.dto.board.BoardDto;
 import com.board.game.mankala.entity.Board;
-import com.board.game.mankala.enumeration.GameState;
 import com.board.game.mankala.enumeration.StrategyName;
-import com.board.game.mankala.impl.PlayingStrategy;
+import com.board.game.mankala.strategy.PlayingStrategy;
 import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.KalahaBoardNotFoundException;
 import com.board.game.mankala.exception.KalahaWebException;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
