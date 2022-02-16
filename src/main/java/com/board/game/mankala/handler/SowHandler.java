@@ -4,5 +4,5 @@ import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.PlayerType;
 
 public interface SowHandler {
-    void sow(Board board, int pitId, int pitValue, PlayerType type);
+    Board sow(Board board, int pitId, int stone, PlayerType type);
 }

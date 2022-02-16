@@ -14,15 +14,27 @@ public class RulesImpl implements RuleHandler{
 
     private final BoardRepository boardRepository;
 
+    /**
+     *
+     * @param board get all board data
+     * @param remainingStone remaining stone count to switch
+     * @param playerType REAL or BOT
+     */
     @Override
-    public void switchPlayer(Board board, int pitValue, PlayerType playerType) {
+    public void switchPlayer(Board board, int remainingStone, PlayerType playerType) {
         if (playerType == PlayerType.BOT) {
-            switchToRealPlayer(board, pitValue);
+            switchToRealPlayer(board, remainingStone);
         } else {
-            switchToBotPlayer(board, pitValue);
+            switchToBotPlayer(board, remainingStone);
         }
     }
 
+    /**
+     *
+     * @param board all board data
+     * @param pitId selected pit id
+     * @param type REAL or BOT
+     */
     @Override
     public void getExtra(Board board, int pitId, PlayerType type) {
         if (type.equals(PlayerType.BOT) && pitId > 0 && board.getRealPits().get(pitId) != 0){
@@ -38,34 +50,44 @@ public class RulesImpl implements RuleHandler{
         boardRepository.save(board);
     }
 
-    private void switchToBotPlayer(Board board, int remainingPitValue){
+    /**
+     *
+     * @param board all board data
+     * @param remainingStone remaining stone from real player side to switching to bot player side
+     */
+    private void switchToBotPlayer(Board board, int remainingStone){
         int pitId = 6;
-        while (remainingPitValue > 0) {
+        while (remainingStone > 0) {
             board.getBotPits().put(pitId, (board.getBotPits().get(pitId)) + 1);
-            remainingPitValue--;
+            remainingStone--;
             pitId--;
 
             if (pitId < 1) {
                 board.setBotStorage(board.getBotStorage() + 1);
-                remainingPitValue--;
-                switchToRealPlayer(board, remainingPitValue);
+                remainingStone--;
+                switchToRealPlayer(board, remainingStone);
                 break;
             }
         }
         boardRepository.save(board);
     }
 
-    private void switchToRealPlayer(Board board, int remainingPitValue){
+    /**
+     *
+     * @param board all board data
+     * @param remainingStone remaining stone from bot player side to switching to real player side
+     */
+    private void switchToRealPlayer(Board board, int remainingStone){
         int pitId = 1;
-        while(remainingPitValue > 0) {
+        while(remainingStone > 0) {
             board.getRealPits().put(pitId, (board.getRealPits().get(pitId)) + 1);
             pitId++;
-            remainingPitValue--;
+            remainingStone--;
 
-            if (pitId > board.getRealPits().size() && remainingPitValue > 0){
+            if (pitId > board.getRealPits().size() && remainingStone > 0){
                 board.setRealStorage(board.getRealStorage() + 1);
-                remainingPitValue--;
-                switchToBotPlayer(board, remainingPitValue);
+                remainingStone--;
+                switchToBotPlayer(board, remainingStone);
                 break;
             }
         }

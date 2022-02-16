@@ -1,44 +1,24 @@
 package com.board.game.mankala.test.unit;
 
 import com.board.game.mankala.component.BotPlayerImpl;
-import com.board.game.mankala.component.RulesImpl;
-import com.board.game.mankala.config.MankalaPropertiesConfiguration;
-import com.board.game.mankala.config.TestRedisConfiguration;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.PlayerType;
-import com.board.game.mankala.exception.KalahaBoardNotFoundException;
-import com.board.game.mankala.repository.BoardRepository;
-import com.board.game.mankala.service.MankalaService;
+import com.board.game.mankala.exception.MancalaBoardNotFoundException;
+import com.board.game.mankala.test.AbstractMancalaUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
 import redis.embedded.RedisServer;
 
 import java.util.HashMap;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@SpringBootTest
-class BotPlayerImplTest {
+
+class BotPlayerImplTest extends AbstractMancalaUnitTest {
 
     @Autowired
     private BotPlayerImpl botPlayer;
-    @Autowired
-    public BoardRepository boardRepository;
-
-    @Autowired
-    private RulesImpl ruleHandler;
-
-    @Autowired
-    private MankalaPropertiesConfiguration kalahaSetting;
-
-    @MockBean
-    private MankalaService mankalaService;
 
     @BeforeEach
     public void setUp() {
@@ -86,7 +66,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 1, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new);
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new);
 
         //************************
         //          THEN
@@ -147,7 +127,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 4, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -207,7 +187,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 1, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -267,7 +247,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 2, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -327,7 +307,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 4, 2, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -387,7 +367,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 1, 6, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -447,7 +427,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 5, 14, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -507,7 +487,7 @@ class BotPlayerImplTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 2, 12, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -568,7 +548,7 @@ class BotPlayerImplTest {
         //************************
 
         botPlayer.sow(board, 1, 6, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************

@@ -13,55 +13,55 @@ import org.springframework.stereotype.Component;
 public class BotPlayerImpl implements SowHandler {
 
     private final RulesImpl ruleHandler;
-    private final MankalaPropertiesConfiguration kalahaSetting;
+    private final MankalaPropertiesConfiguration mankalaConfig;
     private final BoardRepository boardRepository;
 
     /**
      *
-     * @param board
-     * @param pitId
-     * @param pitValue
-     * @param type
+     * @param board with all data
+     * @param pitId selected pit id of bot player which is random
+     * @param stone selected pit stones
+     * @param type BOT
      */
     @Override
-    public void sow(Board board, int pitId, int pitValue, PlayerType type) {
-        board.getBotPits().put(pitId, kalahaSetting.getZero());
+    public Board sow(Board board, int pitId, int stone, PlayerType type) {
+        board.getBotPits().put(pitId, mankalaConfig.getZero());
 
-        int previousValueOfCurrentIndex = kalahaSetting.getZero();
+        int previousValueOfCurrentIndex = mankalaConfig.getZero();
 
-        while (pitValue > kalahaSetting.getZero()) {
+        while (stone > mankalaConfig.getZero()) {
 
-            if (pitId > kalahaSetting.getPitsIdMinSize() && pitId <= board.getBotPits().size()) {
+            if (pitId > mankalaConfig.getPitsIdMinSize() && pitId <= board.getBotPits().size()) {
                 pitId--;
                 previousValueOfCurrentIndex = getBotPreviousValue(board, pitId);
                 board.getBotPits().put(pitId, board.getBotPits().get(pitId) + 1);
-                pitValue--;
+                stone--;
             }
 
-            if (previousValueOfCurrentIndex == kalahaSetting.getZero() &&
-                    pitValue == kalahaSetting.getZero()) {
+            if (previousValueOfCurrentIndex == mankalaConfig.getZero() &&
+                    stone == mankalaConfig.getZero()) {
                 ruleHandler.getExtra(board, pitId++, PlayerType.BOT);
             }
 
-            if (pitId == kalahaSetting.getPitsIdMinSize() && pitValue > kalahaSetting.getZero()) {
+            if (pitId == mankalaConfig.getPitsIdMinSize() && stone > mankalaConfig.getZero()) {
                 board.setBotStorage(board.getBotStorage() + 1);
-                pitValue--;
-                isBotTurn(board, pitValue);
-                if (pitValue > kalahaSetting.getZero()) {
-                    ruleHandler.switchPlayer(board, pitValue, PlayerType.BOT);
+                stone--;
+                isBotTurn(board, stone);
+                if (stone > mankalaConfig.getZero()) {
+                    ruleHandler.switchPlayer(board, stone, PlayerType.BOT);
                     break;
                 }
             }
         }
-        boardRepository.save(board);
+        return boardRepository.save(board);
     }
 
     private int getBotPreviousValue(Board board, int pitId) {
         return board.getBotPits().get(pitId);
     }
 
-    private void isBotTurn(Board board, int pitValue) {
-        if (pitValue == kalahaSetting.getZero()) {
+    private void isBotTurn(Board board, int stone) {
+        if (stone == mankalaConfig.getZero()) {
             board.setRealTurn(false);
             board.setBotTurn(true); // it is bot player turning again
         }else {

@@ -1,21 +1,17 @@
 package com.board.game.mankala.test.integration;
 
-import com.board.game.mankala.config.TestRedisConfiguration;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.GameState;
-import com.board.game.mankala.exception.KalahaOutOfBandException;
-import com.board.game.mankala.exception.KalahaWebException;
+import com.board.game.mankala.exception.MankalaOutOfBandException;
+import com.board.game.mankala.exception.MankalaWebException;
 import com.board.game.mankala.repository.BoardRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -51,7 +47,6 @@ class MankalaServiceTest {
             //do nothing
         }
     }
-
     @Test
     void test_board_creation_service() throws Exception {
         //************************
@@ -116,8 +111,8 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 0, 0);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":6},{\"id\":2,\"value\":6},{\"id\":3,\"value\":6},{\"id\":4,\"value\":6},{\"id\":5,\"value\":6},{\"id\":6,\"value\":6}]," +
-                "\"botPits\":[{\"id\":1,\"value\":6},{\"id\":2,\"value\":6},{\"id\":3,\"value\":6},{\"id\":4,\"value\":6},{\"id\":5,\"value\":6},{\"id\":6,\"value\":6}],\"botStorage\":0,\"realStorage\":0}";
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6}," +
+                "\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"realStorage\":0,\"botStorage\":0}";
 
         //************************
         //          WHEN
@@ -136,8 +131,8 @@ class MankalaServiceTest {
         // check rest response
         assertThat(restResponse).isNotEmpty();
 
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":7},{\"id\":2,\"value\":7},{\"id\":3,\"value\":7},{\"id\":4,\"value\":7},{\"id\":5,\"value\":7},{\"id\":6,\"value\":0}]," +
-                "\"botPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":7},{\"id\":3,\"value\":7},{\"id\":4,\"value\":7},{\"id\":5,\"value\":7},{\"id\":6,\"value\":7}],\"botStorage\":1,\"realStorage\":1}", true);
+        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":7,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":0}," +
+                "\"botPits\":{\"1\":0,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":7},\"botStorage\":1,\"realStorage\":1}", true);
     }
 
     @Test
@@ -166,8 +161,8 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 18, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":1},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":4},{\"id\":6,\"value\":0}]," +
-                "\"botPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":1},{\"id\":3,\"value\":1},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":22}],\"botStorage\":18,\"realStorage\":20}";
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
 
         //************************
         //          WHEN
@@ -186,8 +181,8 @@ class MankalaServiceTest {
         // check rest response
         assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
 
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":4},{\"id\":6,\"value\":0}]," +
-                "\"botPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":0},{\"id\":3,\"value\":1},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":22}],\"botStorage\":20,\"realStorage\":20}", true);
+        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0}" +
+                ",\"botPits\":{\"1\":0,\"2\":0,\"3\":1,\"4\":0,\"5\":0,\"6\":22},\"botStorage\":20,\"realStorage\":20}", true);
     }
 
     @Test
@@ -216,8 +211,8 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 18, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":1},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":4},{\"id\":6,\"value\":0}]," +
-                "\"botPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":1},{\"id\":3,\"value\":1},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":22}],\"botStorage\":20,\"realStorage\":18}";
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
 
         //************************
         //          WHEN
@@ -230,7 +225,7 @@ class MankalaServiceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof KalahaWebException))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MankalaWebException))
                 .andExpect(result -> assertEquals("Chosen pit does not filled, please choose another pit!",
                         Objects.requireNonNull(result.getResolvedException()).getMessage()))
                 .andReturn();
@@ -262,8 +257,8 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 18, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":1},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":4},{\"id\":6,\"value\":0}]," +
-                "\"botPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":1},{\"id\":3,\"value\":1},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":22}],\"botStorage\":20,\"realStorage\":18}";
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
 
         //************************
         //          WHEN
@@ -276,7 +271,7 @@ class MankalaServiceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof KalahaOutOfBandException))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MankalaOutOfBandException))
                 .andExpect(result -> assertEquals("Chosen pit should be between 1 to 6!",
                         Objects.requireNonNull(result.getResolvedException()).getMessage()))
                 .andReturn();
@@ -308,8 +303,8 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 21, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":[{\"id\":1,\"value\":1},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":0}]," +
-                "\"realPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":1},{\"id\":3,\"value\":1},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":22}],\"botStorage\":20,\"realStorage\":21}";
+        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
+                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
 
         //************************
         //          WHEN
@@ -328,8 +323,8 @@ class MankalaServiceTest {
         // check rest response
         assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
 
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":0}]," +
-                "\"botPits\":[{\"id\":1,\"value\":0},{\"id\":2,\"value\":0},{\"id\":3,\"value\":0},{\"id\":4,\"value\":0},{\"id\":5,\"value\":0},{\"id\":6,\"value\":0}],\"botStorage\":21,\"realStorage\":45}", true);
+        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0}," +
+                "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":21,\"realStorage\":45}", true);
     }
 
     private void saveNewBoard(HashMap<Integer, Integer> realPits, HashMap<Integer, Integer> botPits, int realStorage, int botStorage) {

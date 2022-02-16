@@ -4,16 +4,15 @@ import com.board.game.mankala.enumeration.GameState;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
 public class BoardDto {
 
     String id;
-    List<StoneDto> realPits;
-    List<StoneDto> botPits;
+    Map<Integer, Integer> realPits;
+    Map<Integer, Integer> botPits;
     int botStorage;
     int realStorage;
     @JsonIgnore

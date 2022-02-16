@@ -12,22 +12,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {KalahaBoardNotFoundException.class})
-    protected ResponseEntity<RestResponse> handleNotFoundException(KalahaBoardNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(value = {MancalaBoardNotFoundException.class})
+    protected ResponseEntity<RestResponse> handleNotFoundException(MancalaBoardNotFoundException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestResponse(RestResponseType.ERROR, "Board not found"));
     }
 
-    @ExceptionHandler(value = {KalahaOutOfBandException.class})
-    protected ResponseEntity<RestResponse> handleOutOfBandException(KalahaOutOfBandException ex, WebRequest request) {
+    @ExceptionHandler(value = {MankalaOutOfBandException.class})
+    protected ResponseEntity<RestResponse> handleOutOfBandException(MankalaOutOfBandException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestResponse(RestResponseType.ERROR, ex.getMessage()));
     }
 
-    @ExceptionHandler(value = {KalahaIsTheWrongTurnException.class})
-    protected ResponseEntity<RestResponse> handleMakeTheWrongTurn(KalahaIsTheWrongTurnException ex, WebRequest request) {
+    @ExceptionHandler(value = {MankalaIsTheWrongTurnException.class})
+    protected ResponseEntity<RestResponse> handleMakeTheWrongTurn(MankalaIsTheWrongTurnException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new RestResponse(RestResponseType.WARNING, ex.getMessage()));
     }
 
-    @ExceptionHandler(value = {KalahaWebException.class})
+    @ExceptionHandler(value = {MankalaWebException.class})
     protected ResponseEntity<RestResponse> handleWebException(RuntimeException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestResponse(RestResponseType.WARNING, ex.getMessage()));
     }

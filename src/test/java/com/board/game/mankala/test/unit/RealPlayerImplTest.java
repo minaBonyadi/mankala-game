@@ -1,18 +1,13 @@
 package com.board.game.mankala.test.unit;
 
 import com.board.game.mankala.component.RealPlayerImpl;
-import com.board.game.mankala.component.RulesImpl;
-import com.board.game.mankala.config.MankalaPropertiesConfiguration;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.PlayerType;
-import com.board.game.mankala.exception.KalahaBoardNotFoundException;
-import com.board.game.mankala.repository.BoardRepository;
-import com.board.game.mankala.service.MankalaService;
+import com.board.game.mankala.exception.MancalaBoardNotFoundException;
+import com.board.game.mankala.test.AbstractMancalaUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import redis.embedded.RedisServer;
 
 import java.util.HashMap;
@@ -20,23 +15,10 @@ import java.util.HashMap;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
-@SpringBootTest
-class RealPlayerImplTest {
+class RealPlayerImplTest extends AbstractMancalaUnitTest {
 
     @Autowired
     private RealPlayerImpl realPlayer;
-
-    @Autowired
-    public BoardRepository boardRepository;
-
-    @Autowired
-    private RulesImpl ruleHandler;
-
-    @Autowired
-    private MankalaPropertiesConfiguration kalahaSetting;
-
-    @MockBean
-    private MankalaService mankalaService;
 
     @BeforeEach
     public void setUp() {
@@ -84,7 +66,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 1, 1, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new);
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new);
 
         //************************
         //          THEN
@@ -145,7 +127,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 4, 1, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -205,7 +187,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 3, 2, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -265,7 +247,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 2, 2, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -325,7 +307,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 4, 2, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -385,7 +367,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 1, 6, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -445,7 +427,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 5, 12, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -505,7 +487,7 @@ class RealPlayerImplTest {
         //          WHEN
         //************************
         realPlayer.sow(board, 2, 1, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -566,7 +548,7 @@ class RealPlayerImplTest {
         //************************
 
         realPlayer.sow(board, 6, 1, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(KalahaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************

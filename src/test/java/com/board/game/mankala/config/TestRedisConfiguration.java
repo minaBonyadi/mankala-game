@@ -1,6 +1,5 @@
 package com.board.game.mankala.config;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import redis.embedded.RedisServer;

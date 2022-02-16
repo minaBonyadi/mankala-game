@@ -16,11 +16,11 @@ public class MankalaPropertiesConfiguration {
     @Value("${spring.redis.port}")
     private Integer port;
 
-    @Value("${kalaha.board.game.pits.value.max.limit}")
-    private int pitsMaxValueLimit;
+    @Value("${kalaha.board.game.stones.max.limit}")
+    private int stonesMaxLimit;
 
-    @Value("${kalaha.board.game.pits.value.min.limit}")
-    private int pitsMinValueLimit;
+    @Value("${kalaha.board.game.stones.min.limit}")
+    private int stonesMinLimit;
 
     @Value("${kalaha.board.game.pits.of.each.player}")
     private int eachPlayerPitsCount;
@@ -38,7 +38,7 @@ public class MankalaPropertiesConfiguration {
     private int allPitsCount;
 
     @Value("${kalaha.board.game.generate.bot.random.pit.id}")
-    private final int botRandomPitId = RandomUtils.nextInt(pitsMinValueLimit, pitsMaxValueLimit);
+    private final int botRandomPitId = RandomUtils.nextInt(pitsIdMinSize, pitsIdMaxSize);
 
     @Value("${kalaha.board.game.zero}")
     private int zero;
