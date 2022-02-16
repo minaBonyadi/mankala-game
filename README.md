@@ -9,8 +9,6 @@ This project is a kind of Mankala gaming board for real to robot player includin
 ```
 clone https://gitlab.com/bolcom/mina-bonyad/-/tree/master
 git remote add origin https://gitlab.com/bolcom/mina-bonyad.git
-git branch -M master
-git push -uf origin master
 ```
 
 ## tools
@@ -29,7 +27,6 @@ git push -uf origin master
 
 ## Test and Deploy
 
-- [ ] [GitLab CI/CD](https://gitlab.com/bolcom/mina-bonyad/-/pipelines)
 - [ ] [docker-compose up --build](https://gitlab.com/bolcom/mina-bonyad/-/blob/master/docker-compose.yml)
 
 ***
@@ -52,7 +49,7 @@ git push -uf origin master
 
  In this project you can play a Mankala game board with a robot
  But this application does not have UI. You should up docker compose file and then 
- ,you should call this application services from this swagger-ui
+ ,you should call this application services from the swagger-ui
  address (http://localhost:8081/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config)
  After taht, call createGame() service like this (/games/create), from swagger ui for creating a new game and
  then call makeTurn() service that is including request body which is our board data and 
@@ -101,9 +98,12 @@ curl -X 'POST' \
 
 ## Roadmap
 
+- add winning message
+- add more log
 - add spring security
 - add more design pattern
 
 ## Authors and acknowledgment
 
- This is Mina. I am a java backend developer which have more than five years experience in this career.
+ This is Mina. I am a java back-end developer which have more than five years experience in this career,
+ and I have a bachelor degree in software engineering.
