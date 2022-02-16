@@ -3,7 +3,7 @@ package com.board.game.mankala.test.unit;
 import com.board.game.mankala.component.BotPlayerImpl;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.PlayerType;
-import com.board.game.mankala.exception.MancalaBoardNotFoundException;
+import com.board.game.mankala.exception.MankalaBoardNotFoundException;
 import com.board.game.mankala.test.AbstractMancalaUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 1, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new);
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new);
 
         //************************
         //          THEN
@@ -127,7 +127,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 4, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -187,7 +187,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 1, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -247,7 +247,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 3, 2, PlayerType.REAL);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -307,7 +307,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 4, 2, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -367,7 +367,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 1, 6, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -427,7 +427,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 5, 14, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -487,7 +487,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //          WHEN
         //************************
         botPlayer.sow(board, 2, 12, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************
@@ -548,7 +548,7 @@ class BotPlayerImplTest extends AbstractMancalaUnitTest {
         //************************
 
         botPlayer.sow(board, 1, 6, PlayerType.BOT);
-        Board boardResult = boardRepository.findById("123").orElseThrow(MancalaBoardNotFoundException::new); //real choose
+        Board boardResult = boardRepository.findById("123").orElseThrow(MankalaBoardNotFoundException::new); //real choose
         //************************
         //          THEN
         //************************

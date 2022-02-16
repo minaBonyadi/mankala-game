@@ -1,7 +1,6 @@
 package com.board.game.mankala.config;
 
 import lombok.Getter;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -36,9 +35,6 @@ public class MankalaPropertiesConfiguration {
 
     @Value("${kalaha.board.game.all.pits.count}")
     private int allPitsCount;
-
-    @Value("${kalaha.board.game.generate.bot.random.pit.id}")
-    private final int botRandomPitId = RandomUtils.nextInt(pitsIdMinSize, pitsIdMaxSize);
 
     @Value("${kalaha.board.game.zero}")
     private int zero;

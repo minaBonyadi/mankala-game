@@ -1,12 +1,16 @@
 package com.board.game.mankala.test.integration;
 
+import com.board.game.mankala.config.MankalaPropertiesConfiguration;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.GameState;
 import com.board.game.mankala.exception.MankalaOutOfBandException;
 import com.board.game.mankala.exception.MankalaWebException;
 import com.board.game.mankala.repository.BoardRepository;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +38,9 @@ class MankalaServiceTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired
+    private MankalaPropertiesConfiguration mancalaConfig;
 
     @Autowired
     public BoardRepository boardRepository;
@@ -117,14 +124,18 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/6")
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+        String restResponse;
+        try (MockedStatic<RandomUtils> utilities = Mockito.mockStatic(RandomUtils.class)) {
+            utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
-        String restResponse = responseBody.getResponse().getContentAsString();
+            MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/6")
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andReturn();
+            restResponse = responseBody.getResponse().getContentAsString();
+        }
         //************************
         //          THEN
         //************************
@@ -167,19 +178,24 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/1")
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+        String restResponse;
+        try (MockedStatic<RandomUtils> utilities = Mockito.mockStatic(RandomUtils.class)) {
+            utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
-        String restResponse = responseBody.getResponse().getContentAsString();
+            MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/1")
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            restResponse = responseBody.getResponse().getContentAsString();
+        }
         //************************
         //          THEN
         //************************
         // check rest response
-        assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
+        assertThat(restResponse).isNotEmpty();
 
         JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0}" +
                 ",\"botPits\":{\"1\":0,\"2\":0,\"3\":1,\"4\":0,\"5\":0,\"6\":22},\"botStorage\":20,\"realStorage\":20}", true);
@@ -309,19 +325,24 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/3")
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+        String restResponse;
+        try (MockedStatic<RandomUtils> utilities = Mockito.mockStatic(RandomUtils.class)) {
+            utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
-        String restResponse = responseBody.getResponse().getContentAsString();
+            MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/3")
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            restResponse = responseBody.getResponse().getContentAsString();
+        }
         //************************
         //          THEN
         //************************
         // check rest response
-        assertThat(responseBody.getResponse().getContentAsString()).isNotEmpty();
+        assertThat(restResponse).isNotEmpty();
 
         JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0}," +
                 "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":21,\"realStorage\":45}", true);

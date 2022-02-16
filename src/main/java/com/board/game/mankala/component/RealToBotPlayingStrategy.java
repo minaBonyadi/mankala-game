@@ -3,11 +3,14 @@ package com.board.game.mankala.component;
 import com.board.game.mankala.config.MankalaPropertiesConfiguration;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.enumeration.StrategyName;
+import com.board.game.mankala.exception.MankalaBoardNotFoundException;
+import com.board.game.mankala.repository.BoardRepository;
 import com.board.game.mankala.strategy.PlayingStrategy;
 import com.board.game.mankala.enumeration.PlayerType;
 import com.board.game.mankala.exception.MankalaWebException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +21,7 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
     private final RealPlayerImpl realPlayer;
     private final BotPlayerImpl botPlayer;
     private final MankalaPropertiesConfiguration mankalaConfig;
+    private final BoardRepository boardRepository;
     private final GameEnded gameEnded;
 
     @Override
@@ -53,7 +57,8 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
         }
 
         Board boardResult = realPlayer.sow(board, pitId, chosenStone, PlayerType.REAL);
-        return gameEnded.checkGameEnded(boardResult);
+        gameEnded.checkGameEnded(boardResult);
+        return boardRepository.findById(board.getId()).orElseThrow(MankalaBoardNotFoundException::new);
     }
 
     /**
@@ -62,17 +67,18 @@ public class RealToBotPlayingStrategy implements PlayingStrategy {
      * @return board after get effected by sow which taken place in bot player side
      */
     public Board playByBotPlayer(Board board) {
-        int chosenPitId = mankalaConfig.getBotRandomPitId();
+        int chosenPitId = RandomUtils.nextInt(mankalaConfig.getPitsIdMinSize(), mankalaConfig.getPitsIdMaxSize());
         int chosenStone = board.getBotPits().get(chosenPitId);
 
         int counter = 0 ;
         while (chosenStone == 0 && counter <= mankalaConfig.getPitsIdMaxSize()){
-            chosenPitId = mankalaConfig.getBotRandomPitId();
+            chosenPitId = RandomUtils.nextInt(mankalaConfig.getPitsIdMinSize(), mankalaConfig.getPitsIdMaxSize());
             chosenStone = board.getBotPits().get(chosenPitId);
             counter++;
         }
 
         Board boardResult = botPlayer.sow(board, chosenPitId, chosenStone, PlayerType.BOT);
-        return gameEnded.checkGameEnded(boardResult);
+        gameEnded.checkGameEnded(boardResult);
+        return boardRepository.findById(board.getId()).orElseThrow(MankalaBoardNotFoundException::new);
     }
 }

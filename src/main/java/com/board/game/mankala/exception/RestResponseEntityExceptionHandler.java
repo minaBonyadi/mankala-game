@@ -12,8 +12,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {MancalaBoardNotFoundException.class})
-    protected ResponseEntity<RestResponse> handleNotFoundException(MancalaBoardNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(value = {MankalaBoardNotFoundException.class})
+    protected ResponseEntity<RestResponse> handleNotFoundException(MankalaBoardNotFoundException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestResponse(RestResponseType.ERROR, "Board not found"));
     }
 

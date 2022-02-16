@@ -23,6 +23,7 @@ git push -uf origin master
 - [ ] Swagger-ui  
 - [ ] Openapi
 - [ ] Jupiter  
+- [ ] Mockito
 - [ ] Docker
 - [ ] Docker Compose
 
@@ -35,7 +36,7 @@ git push -uf origin master
 
 ## Features
 
-- Game is ready just for (Real to Bot) player strategy right now 
+- Game is ready just for (Real to Bot) player strategy, the board designed for 1 to 6 pits with 6 maximum stones right now 
 - Including Api for exposing this application services to the client
 - With swagger-ui which helps to call Api's services (swagger-ui add: [http://localhost:8081/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config])
 - Strategy design pattern has implemented for different types of playing like (REAL TO REAL, BOT TO BOT, REAL TO BOT)
@@ -56,6 +57,47 @@ git push -uf origin master
  After taht, call createGame() service like this (/games/create), from swagger ui for creating a new game and
  then call makeTurn() service that is including request body which is our board data and 
  a pit id as a path variable in our service call for example (/games/make-turn/1).
+
+## Using Curl To Check Api
+
+-Game creation service [http://localhost:8081/games/create]
+
+```
+curl -X 'POST' \
+'http://localhost:8081/games/create' \
+-H 'accept: */*' \
+-d ''
+```
+
+-Game make turn service [http://localhost:8081/games/make-turn/2],
+(Tip: you should get the "id" from creation service response body)
+```
+curl -X 'POST' \
+  'http://localhost:8081/games/make-turn/2' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "",
+  "realPits": {
+    "1": 6,
+    "2": 6,
+    "3": 6,
+    "4": 6,
+    "5": 6,
+    "6": 6
+  },
+  "botPits": {
+    "1": 6,
+    "2": 6,
+    "3": 6,
+    "4": 6,
+    "5": 6,
+    "6": 6
+  },
+  "botStorage": 0,
+  "realStorage": 0
+}'
+```
 
 ## Roadmap
 

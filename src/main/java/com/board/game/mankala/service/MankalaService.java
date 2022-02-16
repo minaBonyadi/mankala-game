@@ -5,7 +5,7 @@ import com.board.game.mankala.component.MakeTurn;
 import com.board.game.mankala.config.MankalaPropertiesConfiguration;
 import com.board.game.mankala.dto.board.BoardDto;
 import com.board.game.mankala.entity.Board;
-import com.board.game.mankala.exception.MancalaBoardNotFoundException;
+import com.board.game.mankala.exception.MankalaBoardNotFoundException;
 import com.board.game.mankala.repository.BoardRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class MankalaService {
      */
     public BoardDto makeTurn(BoardDto boardDto , int pitId) {
         makeTurnManagement.makeTurn(boardDto, pitId);
-        Board boardResult = boardRepository.findById(boardDto.getId()).orElseThrow(MancalaBoardNotFoundException::new);
+        Board boardResult = boardRepository.findById(boardDto.getId()).orElseThrow(MankalaBoardNotFoundException::new);
 
         return BoardDto.builder()
                 .id(boardResult.getId())
