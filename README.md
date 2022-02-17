@@ -60,7 +60,7 @@ git remote add origin https://gitlab.com/bolcom/mina-bonyad.git
  ,you should call this application services from the swagger-ui
  address (http://localhost:8081/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config)
  After taht, call createGame() service like this (/games/create), from swagger ui for creating a new game and
- then call makeTurn() service that is including request body which is our board data and 
+ then call makeTurn() service that is including request body which is our game data (like game id) and 
  a pit id as a path variable in our service call for example (/games/make-turn/1).
 
 ## Using Curl To Check Api
@@ -75,32 +75,14 @@ curl -X 'POST' \
 ```
 
 -Game make turn service [http://localhost:8081/games/make-turn/2],
-(Tip: you should get the "id" from creation service response body)
+(Tip: you should get the "gameId" from creation service response body)
 ```
 curl -X 'POST' \
   'http://localhost:8081/games/make-turn/2' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "id": "",
-  "realPits": {
-    "1": 6,
-    "2": 6,
-    "3": 6,
-    "4": 6,
-    "5": 6,
-    "6": 6
-  },
-  "botPits": {
-    "1": 6,
-    "2": 6,
-    "3": 6,
-    "4": 6,
-    "5": 6,
-    "6": 6
-  },
-  "botStorage": 0,
-  "realStorage": 0
+  "gameId": ""
 }'
 ```
 

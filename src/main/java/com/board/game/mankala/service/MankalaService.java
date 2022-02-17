@@ -4,6 +4,7 @@ import com.board.game.mankala.component.GameCreation;
 import com.board.game.mankala.component.MakeTurn;
 import com.board.game.mankala.config.MankalaPropertiesConfiguration;
 import com.board.game.mankala.dto.board.BoardDto;
+import com.board.game.mankala.dto.board.GameDto;
 import com.board.game.mankala.entity.Board;
 import com.board.game.mankala.exception.MankalaBoardNotFoundException;
 import com.board.game.mankala.repository.BoardRepository;
@@ -40,13 +41,13 @@ public class MankalaService {
 
     /**
      *
-     * @param gameId is a String game id for current game
+     * @param gameDto is included a String game id for current game
      * @param pitId is a selected pit id from real player
      * @return a board dto which had effect of moving both real and bot player
      */
-    public BoardDto makeTurn(String gameId , int pitId) {
-        makeTurnManagement.makeTurn(gameId, pitId);
-        Board boardResult = boardRepository.findById(gameId).orElseThrow(MankalaBoardNotFoundException::new);
+    public BoardDto makeTurn(GameDto gameDto , int pitId) {
+        makeTurnManagement.makeTurn(gameDto.getGameId(), pitId);
+        Board boardResult = boardRepository.findById(gameDto.getGameId()).orElseThrow(MankalaBoardNotFoundException::new);
 
         return BoardDto.builder()
                 .id(boardResult.getId())
