@@ -36,6 +36,7 @@ public class MankalaService {
                 .botStorage(mankalaConfig.getStorageMinValue())
                 .botPits(board.getBotPits())
                 .realPits(board.getBotPits())
+                .description(board.getDescription())
                 .build();
     }
 
@@ -55,6 +56,7 @@ public class MankalaService {
                 .botPits(boardResult.getBotPits())
                 .realStorage(boardResult.getRealStorage())
                 .botStorage(boardResult.getBotStorage())
+                .description(boardResult.getDescription())
                 .build();
     }
 

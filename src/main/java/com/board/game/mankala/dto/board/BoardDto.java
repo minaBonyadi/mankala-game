@@ -15,6 +15,7 @@ public class BoardDto {
     Map<Integer, Integer> botPits;
     int botStorage;
     int realStorage;
+    String description;
     @JsonIgnore
     GameState gameState;
 

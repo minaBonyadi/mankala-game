@@ -3,7 +3,6 @@ package com.board.game.mankala.controller;
 import com.board.game.mankala.dto.board.BoardDto;
 import com.board.game.mankala.dto.board.GameDto;
 import com.board.game.mankala.service.MankalaService;
-import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -32,7 +31,6 @@ public class MankalaController {
     @ApiOperation(value = "Make turn by real player", response = BoardDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully returned board by effected with both real and bot player move"),
-            @ApiResponse(code = 406, message = "It is real player turning again!"),
             @ApiResponse(code = 406, message = "sorry, It is bot player turning again!"),
             @ApiResponse(code = 400, message = "Can not find the previous value of this pit"),
             @ApiResponse(code = 400, message = "Chosen pit does not filled, please choose another pit!"),

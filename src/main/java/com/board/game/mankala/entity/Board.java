@@ -22,5 +22,6 @@ public class Board implements Serializable {
     int botStorage;
     boolean isRealTurn;
     boolean isBotTurn;
+    String description;
     GameState gameState;
 }

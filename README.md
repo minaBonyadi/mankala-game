@@ -88,7 +88,6 @@ curl -X 'POST' \
 
 ## Roadmap
 
-- add winning message
 - add more log
 - add spring security
 - add more design pattern

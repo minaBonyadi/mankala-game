@@ -19,8 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import redis.embedded.RedisServer;
 
 import java.util.HashMap;
@@ -144,7 +142,7 @@ class MankalaServiceTest {
         assertThat(restResponse).isNotEmpty();
 
         JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":7,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":0}," +
-                "\"botPits\":{\"1\":0,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":7},\"botStorage\":1,\"realStorage\":1}", true);
+                "\"botPits\":{\"1\":0,\"2\":7,\"3\":7,\"4\":7,\"5\":7,\"6\":7},\"botStorage\":1,\"realStorage\":1,\"description\":null}", true);
     }
 
     @Test
@@ -197,8 +195,8 @@ class MankalaServiceTest {
         // check rest response
         assertThat(restResponse).isNotEmpty();
 
-        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0}" +
-                ",\"botPits\":{\"1\":0,\"2\":0,\"3\":1,\"4\":0,\"5\":0,\"6\":22},\"botStorage\":20,\"realStorage\":20}", true);
+        JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0}," +
+                "\"botPits\":{\"1\":0,\"2\":0,\"3\":1,\"4\":0,\"5\":0,\"6\":22},\"botStorage\":20,\"realStorage\":20,\"description\":null}}", true);
     }
 
     @Test
@@ -339,7 +337,7 @@ class MankalaServiceTest {
         assertThat(restResponse).isNotEmpty();
 
         JSONAssert.assertEquals(restResponse, "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"realPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0}," +
-                "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":21,\"realStorage\":45}", true);
+                "\"botPits\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"botStorage\":21,\"realStorage\":45,\"description\":\"Real player won The game !\"}", true);
     }
 
     private void saveNewBoard(HashMap<Integer, Integer> realPits, HashMap<Integer, Integer> botPits, int realStorage, int botStorage) {

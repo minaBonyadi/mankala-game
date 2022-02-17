@@ -18,9 +18,8 @@ public class GameEnded {
     /**
      *
      * @param boardState all board data as a board dto
-     * @return board data if game ended would be all pits stones equal to zero, if not it does not changed
      */
-    public Board checkGameEnded(Board boardState) {
+    public void checkGameEnded(Board boardState) {
         Board board = boardRepository.findById(boardState.getId()).orElseThrow(MankalaBoardNotFoundException::new);
 
         if (board.getRealPits().values().stream().allMatch(value -> value == 0) ||
@@ -36,18 +35,21 @@ public class GameEnded {
         }else {
             log.info("This mankala game has not ended yet!");
         }
-        return boardRepository.save(board);
+        boardRepository.save(board);
     }
 
     private void whoIsWinner(Board board) {
 
         if (board.getBotStorage() > board.getRealStorage()) {
+            board.setDescription("Robot won the game !");
             log.info("Bot won the game :)");
 
         }else if (board.getBotStorage() < board.getRealStorage()) {
-            log.info("Real wonThe game :)");
+            board.setDescription("Real player won The game !");
+            log.info("Real won The game :)");
 
         }else {
+            board.setDescription("No one won the game!");
             log.info("No one won the game :|");
 
         }
