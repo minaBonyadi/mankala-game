@@ -1,7 +1,6 @@
 package com.board.game.mankala.controller;
 
 import com.board.game.mankala.dto.board.BoardDto;
-import com.board.game.mankala.dto.board.GameDto;
 import com.board.game.mankala.service.MankalaService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -36,7 +35,7 @@ public class MankalaController {
             @ApiResponse(code = 400, message = "Chosen pit does not filled, please choose another pit!"),
             @ApiResponse(code = 404, message = "Board not found")})
     @PostMapping("/make-turn/{pitId}")
-    public ResponseEntity<BoardDto> makeTurnRealPlayer(@Valid @RequestBody GameDto gameDto, @PathVariable int pitId) {
-        return new ResponseEntity<>(mankalaService.makeTurn(gameDto, pitId), HttpStatus.OK);
+    public ResponseEntity<BoardDto> makeTurnRealPlayer(@Valid @RequestParam("gameId") String gameId, @PathVariable int pitId) {
+        return new ResponseEntity<>(mankalaService.makeTurn(gameId, pitId), HttpStatus.OK);
     }
 }

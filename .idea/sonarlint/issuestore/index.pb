@@ -6,5 +6,3 @@ s
 Csrc/main/java/com/board/game/mankala/config/RedisConfiguration.java,3/7/375658f9ff73896c8c43920f2f52c7c2140181ba
 j
 :src/main/java/com/board/game/mankala/dto/RestResponse.java,a/f/afb9afa2e7b3f31bc96e2f2cb100852626ab944e
-l
-<src/main/java/com/board/game/mankala/dto/board/StoneDto.java,1/5/155e8339d89a6619c1f7a74426ef71d59f5243e9

@@ -82,7 +82,7 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "gameId": ""
+  "gameId": "2a76db1d-7a2a-4307-b3ab-5dfbed22d300"
 }'
 ```
 

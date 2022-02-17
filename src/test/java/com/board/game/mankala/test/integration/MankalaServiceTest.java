@@ -121,14 +121,14 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        String requestBody = "{\"gameId\":\"50b66cc4-d64a-456b-b202-2c258100f057\"}";
+//        String requestBody = "{\"gameId\":\"50b66cc4-d64a-456b-b202-2c258100f057\"}";
 
         String restResponse;
         try (MockedStatic<RandomUtils> utilities = Mockito.mockStatic(RandomUtils.class)) {
             utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
             MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/6")
-                    .content(requestBody)
+                    .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -174,14 +174,12 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        String requestBody = "{\"gameId\":\"50b66cc4-d64a-456b-b202-2c258100f057\"}";
-
         String restResponse;
         try (MockedStatic<RandomUtils> utilities = Mockito.mockStatic(RandomUtils.class)) {
             utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
             MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/1")
-                    .content(requestBody)
+                    .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -228,13 +226,11 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        String requestBody = "{\"gameId\":\"50b66cc4-d64a-456b-b202-2c258100f057\"}";
-
         //************************
         //          THEN
         //************************
         mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/2")
-                .content(requestBody)
+                .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -272,12 +268,11 @@ class MankalaServiceTest {
         //************************
         //          WHEN
         //************************
-        String requestBody = "{\"gameId\":\"50b66cc4-d64a-456b-b202-2c258100f057\"}";
         //************************
         //          THEN
         //************************
         mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/7")
-                .content(requestBody)
+                .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -313,7 +308,6 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 21, 20);
 
-        String requestBody = "{\"gameId\":\"50b66cc4-d64a-456b-b202-2c258100f057\"}";
         //************************
         //          WHEN
         //************************
@@ -322,7 +316,7 @@ class MankalaServiceTest {
             utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
             MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/3")
-                    .content(requestBody)
+                    .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
