@@ -118,9 +118,6 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 0, 0);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6}," +
-                "\"realPits\":{\"1\":6,\"2\":6,\"3\":6,\"4\":6,\"5\":6,\"6\":6},\"realStorage\":0,\"botStorage\":0}";
-
         //************************
         //          WHEN
         //************************
@@ -129,7 +126,7 @@ class MankalaServiceTest {
             utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
             MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/6")
-                    .content(requestBody)
+                    .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -172,9 +169,6 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 18, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
-                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
-
         //************************
         //          WHEN
         //************************
@@ -183,7 +177,7 @@ class MankalaServiceTest {
             utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
             MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/1")
-                    .content(requestBody)
+                    .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -227,9 +221,6 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 18, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
-                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
-
         //************************
         //          WHEN
         //************************
@@ -237,7 +228,7 @@ class MankalaServiceTest {
         //          THEN
         //************************
         mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/2")
-                .content(requestBody)
+                .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -272,10 +263,6 @@ class MankalaServiceTest {
         }};
 
         saveNewBoard(realPits, botPits, 18, 20);
-
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
-                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
-
         //************************
         //          WHEN
         //************************
@@ -283,7 +270,7 @@ class MankalaServiceTest {
         //          THEN
         //************************
         mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT+"/7")
-                .content(requestBody)
+                .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -319,9 +306,6 @@ class MankalaServiceTest {
 
         saveNewBoard(realPits, botPits, 21, 20);
 
-        String requestBody = "{\"id\":\"50b66cc4-d64a-456b-b202-2c258100f057\",\"botPits\":{\"1\":0,\"2\":1,\"3\":1,\"4\":0,\"5\":0,\"6\":22}," +
-                "\"realPits\":{\"1\":1,\"2\":0,\"3\":0,\"4\":0,\"5\":4,\"6\":0},\"realStorage\":18,\"botStorage\":20}";
-
         //************************
         //          WHEN
         //************************
@@ -330,7 +314,7 @@ class MankalaServiceTest {
             utilities.when(() -> RandomUtils.nextInt(mancalaConfig.getPitsIdMinSize(), mancalaConfig.getPitsIdMaxSize())).thenReturn(1);
 
             MvcResult responseBody = mockMvc.perform(MockMvcRequestBuilders.post(REAL_TO_BOT_PLAYER_MAKE_TURN_ENDPOINT + "/3")
-                    .content(requestBody)
+                    .param("gameId", "50b66cc4-d64a-456b-b202-2c258100f057")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())

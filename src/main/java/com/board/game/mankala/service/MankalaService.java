@@ -40,13 +40,13 @@ public class MankalaService {
 
     /**
      *
-     * @param boardDto is a data transfer object with all a board data
+     * @param gameId is a String game id for current game
      * @param pitId is a selected pit id from real player
      * @return a board dto which had effect of moving both real and bot player
      */
-    public BoardDto makeTurn(BoardDto boardDto , int pitId) {
-        makeTurnManagement.makeTurn(boardDto, pitId);
-        Board boardResult = boardRepository.findById(boardDto.getId()).orElseThrow(MankalaBoardNotFoundException::new);
+    public BoardDto makeTurn(String gameId , int pitId) {
+        makeTurnManagement.makeTurn(gameId, pitId);
+        Board boardResult = boardRepository.findById(gameId).orElseThrow(MankalaBoardNotFoundException::new);
 
         return BoardDto.builder()
                 .id(boardResult.getId())

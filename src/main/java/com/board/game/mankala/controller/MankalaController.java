@@ -2,6 +2,7 @@ package com.board.game.mankala.controller;
 
 import com.board.game.mankala.dto.board.BoardDto;
 import com.board.game.mankala.service.MankalaService;
+import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -36,7 +37,7 @@ public class MankalaController {
             @ApiResponse(code = 400, message = "Chosen pit does not filled, please choose another pit!"),
             @ApiResponse(code = 404, message = "Board not found")})
     @PostMapping("/make-turn/{pitId}")
-    public ResponseEntity<BoardDto> makeTurnRealPlayer(@Valid @RequestBody BoardDto boardDto, @PathVariable int pitId) {
-        return new ResponseEntity<>(mankalaService.makeTurn(boardDto, pitId), HttpStatus.OK);
+    public ResponseEntity<BoardDto> makeTurnRealPlayer(@Valid @Param("gameId") String gameId, @PathVariable int pitId) {
+        return new ResponseEntity<>(mankalaService.makeTurn(gameId, pitId), HttpStatus.OK);
     }
 }

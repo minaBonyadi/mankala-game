@@ -29,24 +29,37 @@ public class MakeTurn {
         return gameStrategyFactory.findStrategy(StrategyName.REALTOBOT);
     }
 
-
-    public void makeTurn(BoardDto boardDto , int pitId) {
-        makeTurnToRealPlayer(boardDto, pitId);
-        makeTurnToBotPlayer(boardDto);
+    /**
+     *
+     * @param gameId string id of current game
+     * @param pitId real player chosen pit id
+     */
+    public void makeTurn(String gameId , int pitId) {
+        makeTurnToRealPlayer(gameId, pitId);
+        makeTurnToBotPlayer(gameId);
     }
 
-    private void makeTurnToRealPlayer(BoardDto boardDto , int pitId) {
+    /**
+     *
+     * @param gameId string id of current game
+     * @param pitId real player chosen pit id
+     */
+    private void makeTurnToRealPlayer(String gameId , int pitId) {
         validateChosenPitId(pitId);  // validate chosen pit Id
 
-        Board board = boardRepository.findById(boardDto.getId()).orElseThrow(MankalaBoardNotFoundException::new);
+        Board board = boardRepository.findById(gameId).orElseThrow(MankalaBoardNotFoundException::new);
 
         if (!board.isRealTurn()) {
-            makeTurnToBotPlayer(boardDto);
+            makeTurnToBotPlayer(gameId);
             throw new MankalaIsTheWrongTurnException("sorry, It is bot player turning again!");
         }
         getGameStrategy().play(board, pitId, PlayerType.REAL);
     }
 
+    /**
+     *  validate real player pit id it should be between one to six
+     * @param pitId string id of current game
+     */
     private void validateChosenPitId(int pitId) {
         if (pitId > mankalaSetting.getPitsIdMaxSize() || pitId < mankalaSetting.getPitsIdMinSize()) {
             throw new MankalaOutOfBandException(String.format("Chosen pit should be between %s to %s!",
@@ -54,8 +67,12 @@ public class MakeTurn {
         }
     }
 
-    private void makeTurnToBotPlayer(BoardDto boardDto) {
-        Board board = boardRepository.findById(boardDto.getId())
+    /**
+     *  make turn taken place in robot player side
+     * @param gameId string id of current game
+     */
+    private void makeTurnToBotPlayer(String gameId) {
+        Board board = boardRepository.findById(gameId)
                 .orElseThrow(MankalaBoardNotFoundException::new);
 
         if (board.isBotTurn()) {
