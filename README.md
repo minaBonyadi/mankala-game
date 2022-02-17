@@ -44,10 +44,10 @@ git remote add origin https://gitlab.com/bolcom/mina-bonyad.git
 
 ## Game Model
 
-    All pits are filled by 6 stones in the begining of a game.
+    All pits are filled by 6 stones in the begining of a game and both bot and real storage filled by zero.
 
-    real pits ids ->     bot Storage      1 2 3 4 5 6     real storage
-    bot pits ->               0           1 2 3 4 5 6        0
+    real pits ids->     bot Storage      1(6), 2(6), 3(6), 4(6), 5(6), 6(6)     real storage
+    bot pits ids->               0       1(6), 2(6), 3(6), 4(6), 5(6), 6(6)       0
 
 ## Installation
 
