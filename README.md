@@ -41,6 +41,14 @@ git remote add origin https://gitlab.com/bolcom/mina-bonyad.git
 - Providing unit-test for test (Real to Bot) player rules from both side real move or bot move
 - plus, including integration-test for test (Real to Bot) player Api
 
+
+## Game Model
+
+    All pits are filled by 6 stones in the begining of a game.
+
+    real pits ids ->     bot Storage      1 2 3 4 5 6     real storage
+    bot pits ->               0           1 2 3 4 5 6        0
+
 ## Installation
 
 - After cloning this project just run this command( docker-compose up --build ) in your intellij terminal to install and up this application 
